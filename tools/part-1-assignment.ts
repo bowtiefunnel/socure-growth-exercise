@@ -17,8 +17,8 @@ import type { Account, Lead } from "../lib/types.js";
  * battle cards (hot/warm, subtask = per-card retry) → decision brief.
  * Idempotent: outputs are deterministic filenames — a re-run overwrites, never duplicates.
  */
-export const runLeadPipeline = task({
-  id: "run-lead-pipeline",
+export const part1Assignment = task({
+  id: "part-1-assignment",
   maxDuration: 600,
   run: async (payload: { battleCards?: boolean }, { ctx }) => {
     // 1 · ingest

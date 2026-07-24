@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Socure Pipeline — Lead Book: Before &amp; After</title>
+<style>
+  @page { size: A4 landscape; margin: 12mm; }
+  body { margin:0 auto; padding:1.5rem; max-width:1200px; color:#1a1d23;
+         font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+  h1 { font-size:1.4rem; margin:0 0 .2rem; }
+  h2 { font-size:1.05rem; margin:1.6rem 0 .5rem; border-bottom:1px solid #d9dde4; padding-bottom:.25rem; }
+  p.lede { color:#5b6472; margin:.2rem 0 1rem; }
+  table { border-collapse:collapse; width:100%; font-size:11.5px; }
+  th, td { border:1px solid #d9dde4; padding:.28rem .45rem; text-align:left; vertical-align:top; }
+  th { background:#f5f7fa; font-weight:650; }
+  tr { page-break-inside:avoid; }
+  .hot { color:#b42318; font-weight:700; } .warm { color:#8a4d0f; font-weight:600; } .cold { color:#5b6472; }
+  .note { background:#f5f7fa; border-left:3px solid #0b6e4f; padding:.5rem .8rem; margin:.8rem 0; font-size:.88rem; }
+  .pb { page-break-before:always; }
+</style></head><body>
+
+<h1>Lead Book — Before &amp; After</h1>
+<p class="lede">The same 30 leads: as received in the dataset, and as they exit the pipeline —
+enriched with provenance, scored with a breakdown-backed rubric, routed with a reason.</p>
+
+<h2>Before — raw dataset (30 leads, as ingested; identity fields never mutated)</h2>
+<table>
+<tr><th>id</th><th>name</th><th>email</th><th>domain</th><th>title</th></tr>
+<tr><td>1</td><td>Rachel Ferro</td><td>rachel.ferro@brightlanefinancial.com</td><td>brightlanefinancial.com</td><td>VP of Fraud &amp; Risk</td></tr>
+<tr><td>2</td><td>Tomas Whitfield</td><td>t.whitfield@nordlyhealth.io</td><td>nordlyhealth.io</td><td>Director of IT Security</td></tr>
+<tr><td>3</td><td>Priya Chandrasekar</td><td>priya.chandrasekar@vantagepoint-insurance.com</td><td>vantagepoint-insurance.com</td><td>Chief Compliance Officer</td></tr>
+<tr><td>4</td><td>Devon Marsh</td><td>devon.marsh@haloretailgroup.com</td><td>haloretailgroup.com</td><td>Loss Prevention Manager</td></tr>
+<tr><td>5</td><td>Simone Achebe</td><td>simone.achebe@corestonebank.com</td><td>corestonebank.com</td><td>SVP of Digital Banking</td></tr>
+<tr><td>6</td><td>Wesley Turnbull</td><td>wes.turnbull@quilloxlending.co</td><td>quilloxlending.co</td><td>Head of Underwriting</td></tr>
+<tr><td>7</td><td>Anika Solberg</td><td>anika.solberg@meridianstateu.edu</td><td>meridianstateu.edu</td><td>Registrar</td></tr>
+<tr><td>8</td><td>Jamal Okonkwo</td><td>j.okonkwo@ferrowaymanufacturing.com</td><td>ferrowaymanufacturing.com</td><td>IT Manager</td></tr>
+<tr><td>9</td><td>Elena Kowalczyk</td><td>elena.kowalczyk@brightpathinsure.com</td><td>brightpathinsure.com</td><td>Director of Claims</td></tr>
+<tr><td>10</td><td>Marcus Delgado</td><td>marcus.delgado@paxtongov.org</td><td>paxtongov.org</td><td>Deputy CIO</td></tr>
+<tr><td>11</td><td>Nina Farrow</td><td>nina.farrow@lumenretailco.com</td><td>lumenretailco.com</td><td>VP of eCommerce</td></tr>
+<tr><td>12</td><td>Trevor Baptiste</td><td>t.baptiste@ironclad-payments.com</td><td>ironclad-payments.com</td><td>Head of Trust &amp; Safety</td></tr>
+<tr><td>13</td><td>Katarina Voss</td><td>katarina.voss@willowbrookhealth.org</td><td>willowbrookhealth.org</td><td>Patient Access Director</td></tr>
+<tr><td>14</td><td>Oliver Nkemelu</td><td>oliver.nkemelu@stonegatecu.org</td><td>stonegatecu.org</td><td>VP of Member Services</td></tr>
+<tr><td>15</td><td>Halle Prescott</td><td>halle.prescott@vertexfleetlogistics.com</td><td>vertexfleetlogistics.com</td><td>Operations Manager</td></tr>
+<tr><td>16</td><td>Grant Ashcombe</td><td>grant.ashcombe@thornburycapital.com</td><td>thornburycapital.com</td><td>Managing Director</td></tr>
+<tr><td>17</td><td>Ines Barragan</td><td>ines.barragan@pelicanstatelottery.gov</td><td>pelicanstatelottery.gov</td><td>Compliance Manager</td></tr>
+<tr><td>18</td><td>Silas Underwood</td><td>silas.underwood@brackenridge-insurance.com</td><td>brackenridge-insurance.com</td><td>Director of Underwriting</td></tr>
+<tr><td>19</td><td>Yasmin Okafor</td><td>yasmin.okafor@haloncommerce.io</td><td>haloncommerce.io</td><td>Head of Growth</td></tr>
+<tr><td>20</td><td>Beatrix Landry</td><td>b.landry@summitcresthealth.com</td><td>summitcresthealth.com</td><td>VP of Revenue Cycle</td></tr>
+<tr><td>21</td><td>Colton Mabry</td><td>colton.mabry@driftwoodpayments.co</td><td>driftwoodpayments.co</td><td>Director of Risk Ops</td></tr>
+<tr><td>22</td><td>Zara Whitlock</td><td>zara.whitlock@fernhollowbank.com</td><td>fernhollowbank.com</td><td>Chief Digital Officer</td></tr>
+<tr><td>23</td><td>Desmond Kaczka</td><td>d.kaczka@ridgelinemunicipal.gov</td><td>ridgelinemunicipal.gov</td><td>IT Director</td></tr>
+<tr><td>24</td><td>Lucia Marchetti</td><td>lucia.marchetti@brambletonretail.com</td><td>brambletonretail.com</td><td>Director of Customer Trust</td></tr>
+<tr><td>25</td><td>Aaron Feldstein</td><td>aaron.feldstein@quarrystonelending.com</td><td>quarrystonelending.com</td><td>VP of Credit Risk</td></tr>
+<tr><td>26</td><td>Whitney Sorel</td><td>whitney.sorel@cascadiacu.org</td><td>cascadiacu.org</td><td>Fraud Operations Lead</td></tr>
+<tr><td>27</td><td>Isaiah Brennock</td><td>isaiah.brennock@paloverdeinsurance.com</td><td>paloverdeinsurance.com</td><td>SVP of Claims</td></tr>
+<tr><td>28</td><td>Odette Vance</td><td>odette.vance@thistledowngov.org</td><td>thistledowngov.org</td><td>Benefits Program Director</td></tr>
+<tr><td>29</td><td>Corbin Aldrich</td><td>corbin.aldrich@keystonepayments.io</td><td>keystonepayments.io</td><td>Head of Product Risk</td></tr>
+<tr><td>30</td><td>Freya Lindqvist</td><td>freya.lindqvist@hartwellhealthsystem.org</td><td>hartwellhealthsystem.org</td><td>Director of Patient Identity</td></tr>
+</table>
+
+<h2 class="pb">After — enriched · scored · routed (30 leads, sorted by score)</h2>
+<table>
+<tr><th>id</th><th>name</th><th>title</th><th>domain</th><th>industry</th><th>source</th>
+<th>conf</th><th>score</th><th>tier</th><th>dq</th><th>rep</th><th>pri</th></tr>
+<tr><td>1</td><td>Rachel Ferro</td><td>VP of Fraud &amp; Risk</td><td>brightlanefinancial.com</td><td>finserv_fintech_payments</td><td>public+symbolic</td><td>0.75</td><td><strong>90</strong></td><td class='hot'>hot</td><td></td><td>Rep A</td><td>P1</td></tr>
+<tr><td>21</td><td>Colton Mabry</td><td>Director of Risk Ops</td><td>driftwoodpayments.co</td><td>finserv_fintech_payments</td><td>llm</td><td>0.6</td><td><strong>90</strong></td><td class='hot'>hot</td><td></td><td>Rep A</td><td>P1</td></tr>
+<tr><td>25</td><td>Aaron Feldstein</td><td>VP of Credit Risk</td><td>quarrystonelending.com</td><td>finserv_fintech_payments</td><td>llm</td><td>0.6</td><td><strong>85</strong></td><td class='hot'>hot</td><td></td><td>Rep A</td><td>P1</td></tr>
+<tr><td>29</td><td>Corbin Aldrich</td><td>Head of Product Risk</td><td>keystonepayments.io</td><td>finserv_fintech_payments</td><td>llm</td><td>0.75</td><td><strong>85</strong></td><td class='hot'>hot</td><td></td><td>Rep A</td><td>P1</td></tr>
+<tr><td>30</td><td>Freya Lindqvist</td><td>Director of Patient Identity</td><td>hartwellhealthsystem.org</td><td>gov_healthcare_insurance</td><td>llm</td><td>0.65</td><td><strong>85</strong></td><td class='hot'>hot</td><td></td><td>Rep B</td><td>P1</td></tr>
+<tr><td>3</td><td>Priya Chandrasekar</td><td>Chief Compliance Officer</td><td>vantagepoint-insurance.com</td><td>gov_healthcare_insurance</td><td>llm</td><td>0.7</td><td><strong>83</strong></td><td class='hot'>hot</td><td></td><td>Rep B</td><td>P1</td></tr>
+<tr><td>26</td><td>Whitney Sorel</td><td>Fraud Operations Lead</td><td>cascadiacu.org</td><td>finserv_fintech_payments</td><td>llm</td><td>0.8</td><td><strong>78</strong></td><td class='hot'>hot</td><td></td><td>Rep A</td><td>P1</td></tr>
+<tr><td>12</td><td>Trevor Baptiste</td><td>Head of Trust &amp; Safety</td><td>ironclad-payments.com</td><td>other</td><td>llm</td><td>0.5</td><td><strong>77</strong></td><td class='hot'>hot</td><td></td><td>Rep A</td><td>P1</td></tr>
+<tr><td>22</td><td>Zara Whitlock</td><td>Chief Digital Officer</td><td>fernhollowbank.com</td><td>finserv_fintech_payments</td><td>llm</td><td>0.6</td><td><strong>73</strong></td><td class='warm'>warm</td><td></td><td>Rep A</td><td>P2</td></tr>
+<tr><td>6</td><td>Wesley Turnbull</td><td>Head of Underwriting</td><td>quilloxlending.co</td><td>finserv_fintech_payments</td><td>llm</td><td>0.6</td><td><strong>72</strong></td><td class='warm'>warm</td><td></td><td>Rep A</td><td>P2</td></tr>
+<tr><td>9</td><td>Elena Kowalczyk</td><td>Director of Claims</td><td>brightpathinsure.com</td><td>gov_healthcare_insurance</td><td>public+symbolic</td><td>0.75</td><td><strong>72</strong></td><td class='warm'>warm</td><td></td><td>Rep B</td><td>P2</td></tr>
+<tr><td>18</td><td>Silas Underwood</td><td>Director of Underwriting</td><td>brackenridge-insurance.com</td><td>gov_healthcare_insurance</td><td>llm</td><td>0.75</td><td><strong>72</strong></td><td class='warm'>warm</td><td></td><td>Rep B</td><td>P2</td></tr>
+<tr><td>17</td><td>Ines Barragan</td><td>Compliance Manager</td><td>pelicanstatelottery.gov</td><td>gov_healthcare_insurance</td><td>llm</td><td>0.65</td><td><strong>71</strong></td><td class='warm'>warm</td><td></td><td>Rep C</td><td>P2</td></tr>
+<tr><td>16</td><td>Grant Ashcombe</td><td>Managing Director</td><td>thornburycapital.com</td><td>finserv_fintech_payments</td><td>public+symbolic</td><td>0.75</td><td><strong>70</strong></td><td class='warm'>warm</td><td></td><td>Rep A</td><td>P2</td></tr>
+<tr><td>23</td><td>Desmond Kaczka</td><td>IT Director</td><td>ridgelinemunicipal.gov</td><td>finserv_fintech_payments</td><td>llm</td><td>0.75</td><td><strong>70</strong></td><td class='warm'>warm</td><td></td><td>Rep C</td><td>P2</td></tr>
+<tr><td>5</td><td>Simone Achebe</td><td>SVP of Digital Banking</td><td>corestonebank.com</td><td>finserv_fintech_payments</td><td>public+symbolic</td><td>0.75</td><td><strong>68</strong></td><td class='warm'>warm</td><td></td><td>Rep A</td><td>P2</td></tr>
+<tr><td>13</td><td>Katarina Voss</td><td>Patient Access Director</td><td>willowbrookhealth.org</td><td>gov_healthcare_insurance</td><td>llm</td><td>0.65</td><td><strong>68</strong></td><td class='warm'>warm</td><td></td><td>Rep B</td><td>P2</td></tr>
+<tr><td>14</td><td>Oliver Nkemelu</td><td>VP of Member Services</td><td>stonegatecu.org</td><td>gov_healthcare_insurance</td><td>llm</td><td>0.6</td><td><strong>68</strong></td><td class='warm'>warm</td><td></td><td>Rep A</td><td>P2</td></tr>
+<tr><td>28</td><td>Odette Vance</td><td>Benefits Program Director</td><td>thistledowngov.org</td><td>gov_healthcare_insurance</td><td>llm</td><td>0.6</td><td><strong>68</strong></td><td class='warm'>warm</td><td></td><td>Rep C</td><td>P2</td></tr>
+<tr><td>24</td><td>Lucia Marchetti</td><td>Director of Customer Trust</td><td>brambletonretail.com</td><td>retail_ecommerce_marketplace</td><td>llm</td><td>0.65</td><td><strong>67</strong></td><td class='warm'>warm</td><td></td><td>Rep C</td><td>P2</td></tr>
+<tr><td>27</td><td>Isaiah Brennock</td><td>SVP of Claims</td><td>paloverdeinsurance.com</td><td>gov_healthcare_insurance</td><td>llm</td><td>0.75</td><td><strong>67</strong></td><td class='warm'>warm</td><td></td><td>Rep B</td><td>P2</td></tr>
+<tr><td>2</td><td>Tomas Whitfield</td><td>Director of IT Security</td><td>nordlyhealth.io</td><td>gov_healthcare_insurance</td><td>llm</td><td>0.75</td><td><strong>65</strong></td><td class='warm'>warm</td><td></td><td>Rep B</td><td>P2</td></tr>
+<tr><td>10</td><td>Marcus Delgado</td><td>Deputy CIO</td><td>paxtongov.org</td><td>gov_healthcare_insurance</td><td>llm</td><td>0.8</td><td><strong>65</strong></td><td class='warm'>warm</td><td></td><td>Rep C</td><td>P2</td></tr>
+<tr><td>20</td><td>Beatrix Landry</td><td>VP of Revenue Cycle</td><td>summitcresthealth.com</td><td>gov_healthcare_insurance</td><td>llm</td><td>0.75</td><td><strong>63</strong></td><td class='warm'>warm</td><td></td><td>Rep B</td><td>P2</td></tr>
+<tr><td>4</td><td>Devon Marsh</td><td>Loss Prevention Manager</td><td>haloretailgroup.com</td><td>retail_ecommerce_marketplace</td><td>llm</td><td>0.6</td><td><strong>58</strong></td><td class='warm'>warm</td><td></td><td>Rep C</td><td>P2</td></tr>
+<tr><td>11</td><td>Nina Farrow</td><td>VP of eCommerce</td><td>lumenretailco.com</td><td>retail_ecommerce_marketplace</td><td>llm</td><td>0.6</td><td><strong>53</strong></td><td class='warm'>warm</td><td></td><td>Rep C</td><td>P2</td></tr>
+<tr><td>19</td><td>Yasmin Okafor</td><td>Head of Growth</td><td>haloncommerce.io</td><td>retail_ecommerce_marketplace</td><td>llm</td><td>0.6</td><td><strong>53</strong></td><td class='warm'>warm</td><td></td><td>Rep C</td><td>P2</td></tr>
+<tr><td>7</td><td>Anika Solberg</td><td>Registrar</td><td>meridianstateu.edu</td><td>gov_healthcare_insurance</td><td>llm</td><td>0.6</td><td><strong>38</strong></td><td class='cold'>cold</td><td>DQ</td><td>Rep C</td><td>P3</td></tr>
+<tr><td>8</td><td>Jamal Okonkwo</td><td>IT Manager</td><td>ferrowaymanufacturing.com</td><td>other</td><td>llm</td><td>0.5</td><td><strong>28</strong></td><td class='cold'>cold</td><td>DQ</td><td>Rep C</td><td>P3</td></tr>
+<tr><td>15</td><td>Halle Prescott</td><td>Operations Manager</td><td>vertexfleetlogistics.com</td><td>other</td><td>llm</td><td>0.75</td><td><strong>18</strong></td><td class='cold'>cold</td><td>DQ</td><td>Rep C</td><td>P3</td></tr>
+</table>
+<div class="note">30/30 routed, 0 unrouted · tiers 8 hot / 19 warm / 3 cold · rep load 11 A / 8 B / 11 C ·
+enrichment 26 llm / 4 public+symbolic · every score ships its breakdown, every DQ its reason
+(full detail incl. tech_signals and routing reasons: <code>output/routed_leads.csv</code>).</div>
+
+</body></html>

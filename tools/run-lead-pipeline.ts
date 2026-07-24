@@ -95,11 +95,21 @@ export const runLeadPipeline = task({
     const unrouted = acquisition.filter((l) => !l.routing).length;
     if (unrouted > 0) throw new Error(`${unrouted} leads unrouted — run invariant violated`);
 
+    // run output carries the stage evidence — the run link alone proves enrich/score/route
+    const count = (pick: (l: Lead) => string) =>
+      acquisition.reduce<Record<string, number>>((m, l) => ((m[pick(l)] = (m[pick(l)] ?? 0) + 1), m), {});
     return {
       leads: leads.length,
       suppressed_to_expansion: expansion.length,
       routed: acquisition.length,
       tiers: brief.ok ? brief.output.brief.what_happened.tiers : undefined,
+      enrichment_sources: count((l) => l.enrichment?.source ?? "none"),
+      avg_enrichment_confidence: Number(
+        (acquisition.reduce((s, l) => s + (l.enrichment?.confidence ?? 0), 0) / acquisition.length).toFixed(2),
+      ),
+      rep_load: count((l) => l.routing?.rep_id ?? "unrouted"),
+      hot_leads: acquisition.filter((l) => l.score?.tier === "hot").map((l) => `${l.name} (${l.score!.total})`),
+      dq: acquisition.filter((l) => l.score?.dq_reason).map((l) => l.domain),
       battle_cards: cardCount,
     };
   },

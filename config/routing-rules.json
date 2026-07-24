@@ -1,0 +1,45 @@
+{
+  "$comment": "Compiled from docs/DESIGN.md section 2.5. Account-first routing: leads group to accounts by registrable domain BEFORE routing; the account routes, leads inherit. route.ts executes this file — change routing by editing config, never code.",
+  "version": "1.0.0",
+  "ownership": {
+    "ledger": "memory/account-owners.json",
+    "rule": "an OWNED account's new leads attach to the account owner — territory rules apply ONLY to unowned accounts; first assignment records ownership",
+    "stale_owner": "owner rep no longer in reps[] -> fall through to fresh territory assignment",
+    "buying_committee": "committee_depth > 1 flags a buying team; all members inherit the same owner"
+  },
+  "account_grouping": {
+    "group_by": "registrable_domain(lead.domain)",
+    "account_score": "MAX(lead.score.total)",
+    "$why_max": "committee-best: sum rewards spam, avg lets an IT manager dilute a CRO",
+    "committee_depth": "COUNT(leads) — tiebreaker/flag only, never score inflation"
+  },
+  "reps": [
+    {
+      "id": "rep_a",
+      "name": "Rep A — Banking, Fintech & Payments",
+      "keywords": ["bank", "lending", "loan", "financial", "finance", "payments", "payment", "capital", "credit union", "cu.org", "fintech", "invest", "wealth", "crypto"]
+    },
+    {
+      "id": "rep_b",
+      "name": "Rep B — Healthcare & Insurance",
+      "keywords": ["health", "insurance", "insure", "care", "patient"]
+    },
+    {
+      "id": "rep_c",
+      "name": "Rep C — Public Sector, Retail & Commerce",
+      "keywords": [".gov", "gov.", "lottery", "municipal", "state", "retail", "commerce", "marketplace", "logistics"]
+    }
+  ],
+  "fallback": {
+    "rep": "rep_c",
+    "flag_reason": "unmatched_vertical",
+    "$comment": "unmatched account still routes — zero unrouted is a run invariant"
+  },
+  "priority_map": [
+    { "tier": "hot",  "priority": "P1", "sla": "same-day" },
+    { "tier": "warm", "priority": "P2", "sla": "48h" },
+    { "tier": "cold", "priority": "P3", "sla": "nurture" }
+  ],
+  "match_order": ["rep_a", "rep_b", "rep_c"],
+  "$tie_break": "first matching rep wins in match_order (a 'gov health system' routes to Rep B via 'health' only if no rep_a keyword hits first; order chosen so FinServ > Health/Ins > Public/Retail mirrors rubric vertical weights)"
+}

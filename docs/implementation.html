@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Socure Pipeline — Implementation Plan</title>
+<style>
+  :root { --ink:#1a1d23; --muted:#5b6472; --line:#d9dde4; --bg:#ffffff; --panel:#f5f7fa;
+          --sym:#0b6e4f; --neu:#8a4d0f; --hum:#7c3aed; }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink:#e6e9ee; --muted:#9aa4b2; --line:#333a45; --bg:#14171c; --panel:#1d222a;
+            --sym:#4cc294; --neu:#e0a561; --hum:#b79bf5; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0 auto; padding:2.2rem 1.4rem 4rem; max-width:920px; background:var(--bg);
+         color:var(--ink); font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+  h1 { font-size:1.55rem; margin:0 0 .3rem; }
+  h2 { font-size:1.12rem; margin:2rem 0 .6rem; border-bottom:1px solid var(--line); padding-bottom:.3rem; }
+  p.lede { color:var(--muted); margin:.2rem 0 1.2rem; }
+  strong { font-weight:650; }
+  .tablewrap { overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; font-size:.86rem; }
+  th, td { border:1px solid var(--line); padding:.45rem .55rem; text-align:left; vertical-align:top; }
+  th { background:var(--panel); font-weight:650; }
+  code { background:var(--panel); border:1px solid var(--line); border-radius:4px;
+         padding:.05rem .3rem; font:.82em ui-monospace,SFMono-Regular,Menlo,monospace; }
+  ul, ol { margin:.4rem 0 .9rem; padding-left:1.3rem; }
+  li { margin:.28rem 0; }
+  .phase { background:var(--panel); border:1px solid var(--line); border-radius:8px;
+           padding:.9rem 1.1rem; margin:.9rem 0; }
+  .phase h2 { margin:0 0 .5rem; border:none; padding:0; }
+  .exit { color:var(--sym); font-weight:650; font-size:.88rem; }
+  .done { display:inline-block; font-size:.7rem; font-weight:700; letter-spacing:.04em;
+          padding:.08rem .4rem; border-radius:99px; border:1px solid var(--sym); color:var(--sym); }
+  .tag { display:inline-block; font-size:.7rem; font-weight:700; letter-spacing:.04em;
+         padding:.08rem .4rem; border-radius:99px; border:1px solid currentColor; white-space:nowrap; }
+  .sym { color:var(--sym); } .neu { color:var(--neu); }
+  .note { background:var(--panel); border-left:3px solid var(--hum); border-radius:0 8px 8px 0;
+          padding:.7rem .9rem; margin:1rem 0; font-size:.92rem; }
+  footer { margin-top:2.5rem; color:var(--muted); font-size:.8rem; }
+</style>
+</head>
+<body>
+
+<h1>Implementation Plan — Phased by Capability</h1>
+<p class="lede">The deterministic core ships first and proves itself, then the LLM enablement
+layer, then the decision layer and full team adoption. Implementation isn't done when the
+code runs — it's done when the team runs on it.</p>
+
+<div class="phase">
+<h2>Phase 0 — Build <span class="done">COMPLETE</span></h2>
+<p>Blocks 1–7 per <code>DESIGN.md</code> §5.</p>
+<p class="exit">Exit: live Trigger.dev run link, <code>npm run check</code> green.</p>
+</div>
+
+<div class="phase">
+<h2>Phase 1 — Core pipeline live: enrichment · ICP scoring · routing <span class="tag sym">ZERO-LLM PATH</span></h2>
+<p>Week 1 — no model, no vendor key required to deliver value.</p>
+<ul>
+  <li>Deploy the core tasks to Trigger.dev prod; env vars set (never committed).</li>
+  <li>Enrichment cascade live (vendors env-gated, probe-first; DNS/RDAP + symbolic floor).</li>
+  <li>Create <strong>#lead-pipeline-ops</strong> in Slack: run summaries + threshold alerts
+      (unrouted lead, tier skew, rep imbalance, enrichment trust).</li>
+  <li>Run against the real book; verify invariants live: zero unrouted, breakdown on every score,
+      <code>dq_reason</code> on every DQ, idempotent re-run (ownership ledger stable).</li>
+  <li>Ops owner reviews the routed book + run stats; routing disputes → config edits.</li>
+</ul>
+<p class="exit">Exit: routed book delivered with reasons on every decision; re-run produces the
+identical book; ops sees alerts in Slack.</p>
+</div>
+
+<div class="phase">
+<h2>Phase 2 — Enablement live: battle cards <span class="tag neu">FIRST LLM CAPABILITY</span></h2>
+<p>Week 2 — gated, eval'd, and rep-facing.</p>
+<ul>
+  <li><code>ANTHROPIC_API_KEY</code> + Langfuse keys into prod env; groundedness eval active — a card
+      citing anything outside <code>docs/grounding/</code> fails before a rep sees it.</li>
+  <li>Per-rep Slack delivery: P1 hot-lead alert carries score, breakdown, reason, and battle-card
+      link — <strong>the alert is where the SLA clock starts</strong>.</li>
+  <li><strong>Slack verification — don't assume they see it, prove it:</strong> every rep joins their
+      channel, notifications checked (not muted, mobile push on), and each rep ✅-reacts to a
+      <strong>test P1 alert</strong>. No ack, no go-live for that book.</li>
+  <li><strong>Training session (45 min, recorded):</strong> how a routed lead arrives · reading the score
+      <code>breakdown</code> and <code>dq_reason</code> · reading a battle card in 60 seconds · SLAs
+      (P1 same-day, P2 48h, P3 nurture) · <strong>accept/decline with a reason</strong> — the decline
+      reason is structured data that retunes the rubric, so "junk" is not a reason.</li>
+  <li>Rep cheat-sheet (one page): tiers, priorities, where outputs live, dispute path.</li>
+  <li><strong>Shadow week:</strong> alerts + cards flow, no quota consequences; collect confusion points,
+      fix config/copy, not habits.</li>
+</ul>
+<p class="exit">Exit: every rep has ack'd a test alert; cards passing eval; first real P1 touched
+within SLA.</p>
+</div>
+
+<div class="phase">
+<h2>Phase 3 — Decision layer &amp; adoption</h2>
+<p>Weeks 3–4.</p>
+<ul>
+  <li>Decision brief live: deltas vs. prior run, enrichment trust score, projections,
+      recommendations; LLM narration on (numbers computed by code only).</li>
+  <li><strong>Adoption metrics:</strong> alert-ack rate · time-to-first-touch vs. SLA · ledger fill rate
+      (a decline without a reason counts as unfilled).</li>
+  <li>Weekly 15-min review (first month) runs on the brief, not on opinions; changes ship as
+      shadow-diffed config edits per <code>OPERATIONS.md</code>.</li>
+  <li>Then hand off to the standing <code>OPERATIONS.md</code> cadence (weekly / monthly / quarterly).</li>
+</ul>
+</div>
+
+<h2>Instrumentation per phase — what's tracked, and how we'd know it's working</h2>
+<p>Same metrics as the standing plan (<code>OPERATIONS.md</code> §1), staged by when they first matter:</p>
+<div class="tablewrap">
+<table>
+<tr><th>Phase</th><th>What's tracked</th><th>"It's actually working" when</th></tr>
+<tr><td>1 — Core</td><td>Per-stage success/retries/duration (Trigger.dev) · tier distribution + rep load vs. alert thresholds · enrichment trust score (% live-signal vs. fallback)</td><td>30/30 routed with a rep + score + human-readable reason, zero unrouted, re-run produces the identical book, all thresholds quiet</td></tr>
+<tr><td>2 — Cards</td><td>Langfuse cost/tokens/latency per card · groundedness eval pass-rate · rep alert-ack rate</td><td>100% of shipped cards pass eval, every rep has ack'd, first real P1 touched within SLA</td></tr>
+<tr><td>3 — Adoption</td><td>Time-to-first-touch vs. SLA by priority · ledger fill rate · <strong>reply/meeting rate by tier</strong></td><td>≥90% P1 within SLA, 100% of declines carry reasons, and hot outperforms warm — if it doesn't, the rubric is decoration and Phase 3 feeds the recalibration loop</td></tr>
+</table>
+</div>
+<div class="note">The tier-conversion test is the plan's real success metric: everything before it
+proves the machine runs; that one proves the scoring means something.</div>
+
+<h2>Roles</h2>
+<div class="tablewrap">
+<table>
+<tr><th>Role</th><th>Owns</th></tr>
+<tr><td>Growth engineer</td><td>Pipeline, config changes, shadow-diff promotion, vendor health</td></tr>
+<tr><td>Ops owner</td><td>Slack alerting, SLA tracking, adoption metrics, weekly review</td></tr>
+<tr><td>Reps</td><td>Their book: touch within SLA, accept/decline with reasons</td></tr>
+<tr><td>Escalation</td><td>Routing dispute → ops owner; unresolved &gt;48h → growth engineer edits config</td></tr>
+</table>
+</div>
+
+<h2>Definition of "implemented"</h2>
+<div class="note">
+<ol>
+  <li>Core: routed book delivered, zero unrouted, idempotent re-runs verified in prod.</li>
+  <li>Every rep has ✅-ack'd a test alert in their own channel (seen ≠ assumed).</li>
+  <li>≥90% of P1 alerts touched within SLA from week 3 on.</li>
+  <li>100% of declines carry a reason in the ledger.</li>
+  <li>Weekly review runs on the decision brief, not on opinions.</li>
+</ol>
+</div>
+
+<footer>Socure Growth Engineering Exercise · source of truth: <code>docs/IMPLEMENTATION.md</code></footer>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Socure Pipeline — Operations Plan</title>
+<style>
+  :root { --ink:#1a1d23; --muted:#5b6472; --line:#d9dde4; --bg:#ffffff; --panel:#f5f7fa;
+          --sym:#0b6e4f; --neu:#8a4d0f; --hum:#7c3aed; }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink:#e6e9ee; --muted:#9aa4b2; --line:#333a45; --bg:#14171c; --panel:#1d222a;
+            --sym:#4cc294; --neu:#e0a561; --hum:#b79bf5; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0 auto; padding:2.2rem 1.4rem 4rem; max-width:920px; background:var(--bg);
+         color:var(--ink); font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+  h1 { font-size:1.55rem; margin:0 0 .3rem; }
+  h2 { font-size:1.12rem; margin:2rem 0 .6rem; border-bottom:1px solid var(--line); padding-bottom:.3rem; }
+  h3 { font-size:.95rem; margin:1.2rem 0 .4rem; }
+  p.lede { color:var(--muted); margin:.2rem 0 1.2rem; }
+  strong { font-weight:650; }
+  em { font-style:italic; }
+  .tablewrap { overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; font-size:.86rem; }
+  th, td { border:1px solid var(--line); padding:.45rem .55rem; text-align:left; vertical-align:top; }
+  th { background:var(--panel); font-weight:650; }
+  code { background:var(--panel); border:1px solid var(--line); border-radius:4px;
+         padding:.05rem .3rem; font:.82em ui-monospace,SFMono-Regular,Menlo,monospace; }
+  ul { margin:.4rem 0 .9rem; padding-left:1.3rem; }
+  li { margin:.25rem 0; }
+  .note { background:var(--panel); border-left:3px solid var(--sym); border-radius:0 8px 8px 0;
+          padding:.7rem .9rem; margin:1rem 0; font-size:.92rem; }
+  .warn { border-left-color:var(--neu); }
+  footer { margin-top:2.5rem; color:var(--muted); font-size:.8rem; }
+</style>
+</head>
+<body>
+
+<h1>Operations — Instrumentation · Maintenance · Change Management</h1>
+<p class="lede">How the pipeline is observed, kept healthy, and changed safely.</p>
+
+<h2>1 · Instrumentation plan — what's tracked, and how I'd know it's working</h2>
+
+<ul>
+  <li><strong>Per run (built):</strong> tier distribution + rep load, written to <code>output/</code> and compared
+      against the prior run (<code>memory/runs/</code>) by the decision brief — deltas, enrichment trust score
+      (% live-signal vs. fallback), and rules-triggered recommendations.</li>
+  <li><strong>Pipeline health (Trigger.dev):</strong> per-stage success/retries/duration; a failed enrichment
+      degrades one lead's confidence, never blocks the run.</li>
+  <li><strong>LLM (Langfuse):</strong> cost, tokens, latency per call; groundedness eval on every battle card —
+      a card citing an unverified number fails before a rep sees it.</li>
+</ul>
+
+<h3>Alert thresholds (Slack, ops channel)</h3>
+<div class="tablewrap">
+<table>
+<tr><th>Alert</th><th>Meaning</th></tr>
+<tr><td>Any unrouted lead</td><td>Invariant breach — run fails loudly</td></tr>
+<tr><td>Tier skew: 0 hot, or hot &gt;40%</td><td>Rubric miscalibrated</td></tr>
+<tr><td>Rep imbalance: &gt;50% of book on one rep</td><td>Routing rules need a territory rebalance</td></tr>
+<tr><td>Enrichment trust &lt;50%</td><td>Don't trust the vertical mix until sources improve</td></tr>
+</table>
+</div>
+
+<h3>How I'd know it's actually working</h3>
+<div class="note">
+<strong>Day one:</strong> 30/30 exit with rep + score + human-readable reason, zero unrouted, re-runs idempotent
+(<code>npm run check</code> — offline invariant tests for scoring, routing, suppression, ownership).<br><br>
+<strong>Real signal:</strong> reply/meeting rate <strong>by tier</strong>. If hot doesn't outperform warm, the rubric
+is decoration. Rep accept/decline decisions (with reasons) are the training data that retunes weights —
+the loop learns in data, not vibes.
+</div>
+
+<h2>2 · Maintenance plan — what needs regular attention</h2>
+<div class="tablewrap">
+<table>
+<tr><th>Cadence</th><th>Task</th><th>Trigger to act early</th></tr>
+<tr><td>Weekly</td><td>Review Langfuse spend + eval pass-rate; triage any failed runs (per-stage retry logs)</td><td>Eval pass-rate drops, cost spike</td></tr>
+<tr><td>Weekly</td><td>Sync <code>data/socure-customer-list.csv</code> from CRM — suppression is only as good as this list</td><td>New closed-won logo</td></tr>
+<tr><td>Monthly</td><td>Vendor coverage check: Bitscale/nRev hit-rate vs. the DNS/RDAP + symbolic floor</td><td>Enrichment trust score trending down</td></tr>
+<tr><td>Monthly</td><td>Reconcile ownership ledger vs. CRM account owners</td><td>Rep change, territory change</td></tr>
+<tr><td>Quarterly</td><td>Refresh grounding corpus: new Socure case studies enter the allowlist <strong>only after adversarial verification</strong>; retired claims join the blocklist</td><td>New press release cited in a card draft</td></tr>
+<tr><td>Quarterly</td><td>Rubric recalibration: re-run the reverse-ICP on the current customer base; retune weights from the rep accept/decline ledger</td><td>Hot-tier reply rate ≤ warm-tier</td></tr>
+<tr><td>As released</td><td>Pin bumps: Trigger.dev SDK, Anthropic model version (Haiku deprecations), Langfuse</td><td>Deprecation notices</td></tr>
+</table>
+</div>
+
+<div class="note warn">
+<strong>Failure runbook:</strong> every stage retries independently (Trigger.dev); an invariant breach
+(unrouted lead, contract violation) fails the run loudly by design — fix config or data, re-run;
+idempotency guarantees no duplicate rows, cards, or events.
+</div>
+
+<h2>3 · Change management plan — how changes ship safely</h2>
+
+<ul>
+  <li><strong>All decision logic is config, so every change is a diff.</strong> The ICP, territories, and
+      confidence ceilings live in <code>config/*.json</code> (the rubric carries a <code>version</code> field and
+      inline evidence citations). No weights or thresholds hide in code or prompts — a change is a reviewable
+      one-file PR, and rollback is <code>git revert</code> + re-run (idempotent, so regeneration is safe).</li>
+  <li><strong>Shadow before promote.</strong> A rubric or routing change is re-run against the current book
+      before it goes live; the decision brief diffs the result vs. the prior snapshot (<code>memory/runs/</code>) —
+      tier migrations and rep-load shifts are visible <em>before</em> any rep's book actually moves.
+      Promote only when the diff is intended.</li>
+  <li><strong>Evidence gate on content changes.</strong> New proof points, competitive claims, or persona pains
+      enter <code>docs/grounding/</code> only through verification; the battle-card eval enforces it downstream,
+      so an unverified claim can't ship even if it sneaks into a prompt.</li>
+  <li><strong>Prompt changes are versioned and eval'd.</strong> Prompts live in <code>prompts/</code> (files, so they
+      diff like code); Langfuse traces which version produced which output, and the groundedness eval must hold
+      before a new prompt version becomes the default.</li>
+  <li><strong>Human gates only loosen by evidence — and some never do.</strong> Autonomy changes follow the
+      graduated-trust ladder (per-category confidence ≥ ~90% over ≥ 20 decided items to batch review;
+      rolling-window demotion below ~80%). Battle cards are outward-facing → permanent per-item rep review,
+      regardless of confidence.</li>
+  <li><strong>People side:</strong> reps get a Slack note when territories or the rubric change (their book
+      shifts); the decision brief's next run quantifies exactly what moved and why (variance attributed by
+      rubric dimension), so the change explains itself.</li>
+</ul>
+
+<footer>Socure Growth Engineering Exercise · source of truth: <code>docs/OPERATIONS.md</code></footer>
+</body>
+</html>

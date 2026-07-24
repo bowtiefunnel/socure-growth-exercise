@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Socure Pipeline — System Design Document</title>
+<style>
+  :root { --ink:#1a1d23; --muted:#5b6472; --line:#d9dde4; --bg:#ffffff; --panel:#f5f7fa;
+          --sym:#0b6e4f; --neu:#8a4d0f; --hum:#7c3aed; }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink:#e6e9ee; --muted:#9aa4b2; --line:#333a45; --bg:#14171c; --panel:#1d222a;
+            --sym:#4cc294; --neu:#e0a561; --hum:#b79bf5; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0 auto; padding:2.2rem 1.4rem 4rem; max-width:920px; background:var(--bg);
+         color:var(--ink); font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+  h1 { font-size:1.55rem; margin:0 0 .3rem; }
+  h2 { font-size:1.12rem; margin:2rem 0 .6rem; border-bottom:1px solid var(--line); padding-bottom:.3rem; }
+  p.lede { color:var(--muted); margin:.2rem 0 1.2rem; }
+  strong { font-weight:650; }
+  em { font-style:italic; }
+  .tablewrap { overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; font-size:.86rem; }
+  th, td { border:1px solid var(--line); padding:.45rem .55rem; text-align:left; vertical-align:top; }
+  th { background:var(--panel); font-weight:650; }
+  code { background:var(--panel); border:1px solid var(--line); border-radius:4px;
+         padding:.05rem .3rem; font:.82em ui-monospace,SFMono-Regular,Menlo,monospace; }
+  pre.block { background:var(--panel); border:1px solid var(--line); border-radius:8px;
+              padding:1rem; overflow-x:auto; font:12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; }
+  ul, ol { margin:.4rem 0 .9rem; padding-left:1.3rem; }
+  li { margin:.28rem 0; }
+  .note { background:var(--panel); border-left:3px solid var(--sym); border-radius:0 8px 8px 0;
+          padding:.7rem .9rem; margin:1rem 0; font-size:.92rem; }
+  footer { margin-top:2.5rem; color:var(--muted); font-size:.8rem; }
+</style>
+</head>
+<body>
+
+<h1>System Design Document — Socure Lead Pipeline</h1>
+<p class="lede">Companion to the architecture one-pager. This is the understanding doc:
+what each component does, the contracts between them, and the decisions behind them.</p>
+
+<h2>1 · Goals and non-goals</h2>
+<p><strong>Goals:</strong> enrich, score, and route 30 leads with full provenance; deterministic,
+reproducible decisions; every output carries its reason; runnable with zero keys.</p>
+<p><strong>Non-goals (documented extensions, not built):</strong> intent-signal scoring (mock CSV has
+none), learning loop retuning weights from the rep ledger, CRM write-back, Slack delivery
+(production rail, spec'd in <code>IMPLEMENTATION.md</code>).</p>
+
+<h2>2 · System overview</h2>
+<p>Two entry points run the same library code:</p>
+<ul>
+  <li><code>npm run pipeline</code> → <code>scripts/run-pipeline.ts</code> — local, zero keys, no LLM.
+      Covers ingest → suppress → enrich (public+symbolic) → score → route → outputs.</li>
+  <li>Trigger.dev tasks (<code>tools/</code>) — the same stages as retryable cloud tasks, plus the two
+      LLM stages (battle cards, brief narration), which need <code>ANTHROPIC_API_KEY</code>.</li>
+</ul>
+<div class="note">That split is deliberate: <strong>the core never depends on a key, a vendor, or a
+model.</strong> The LLM stages bolt on; they never sit in the core's path.</div>
+
+<h2>3 · Component design</h2>
+<div class="tablewrap">
+<table>
+<tr><th>Component</th><th>Responsibility</th><th>Key decision</th></tr>
+<tr><td><code>lib/csv.ts</code></td><td>Parse/serialize CSV</td><td>Identity fields never mutated after ingest</td></tr>
+<tr><td><code>lib/suppression.ts</code></td><td>Gate 0: build customer-domain set, test membership</td><td>43 customer accounts → 34 clean registrable domains; match on lead domain OR email domain; suppressed leads go to the expansion book, never dropped</td></tr>
+<tr><td><code>lib/domain.ts</code></td><td>Registrable-domain normalization</td><td>One definition shared by suppression, grouping, routing — no drift between stages</td></tr>
+<tr><td><code>lib/enrich.ts</code></td><td>Cascade: Bitscale → nRev → DNS MX/RDAP → symbolic → LLM residue; <code>assertEnrichmentContract</code></td><td>Residue classifies, never scores; confidence code-clamped (≤0.6); agreement between independent methods raises trust, disagreement keeps the LLM's ceilinged confidence; unparseable LLM output → keep symbolic, never block</td></tr>
+<tr><td><code>lib/scoring.ts</code></td><td>4-dimension rubric over <code>config/icp-rubric.json</code></td><td>Pure function; vertical matches <code>domain + enrichment.industry</code> with first-bucket-wins priority, so domain evidence outranks LLM labels; DQ flags attach reasons, never subtract points</td></tr>
+<tr><td><code>lib/routing.ts</code></td><td><code>groupAccounts</code> (registrable domain, score = MAX, committee depth) + <code>routeAccount</code></td><td>Account-first: the buyer is a committee. MAX not sum (sum rewards spam) not avg (an IT manager dilutes a CRO). Ownership beats territory; a stale owner falls through to fresh assignment</td></tr>
+<tr><td><code>lib/ownership.ts</code></td><td>Ledger: <code>{domain → rep_id, assigned_at, run_id}</code> in <code>memory/account-owners.json</code></td><td>New assignments persist; re-runs route identically — the ledger is what makes runs idempotent at the routing layer</td></tr>
+<tr><td><code>connections/*</code></td><td>Bitscale, nRev, public DNS/RDAP, Anthropic+Langfuse clients</td><td>Vendors env-gated + probe-first; every client degrades to null, never throws into the pipeline</td></tr>
+<tr><td><code>tools/battle-card.ts</code></td><td>LLM card per hot/warm account, per <code>prompts/battle-card.md</code></td><td>Grounding corpus only; Langfuse groundedness eval; rep gate downstream</td></tr>
+<tr><td><code>tools/decision-brief.ts</code></td><td>Compute deltas/trust/projections vs. <code>memory/runs/</code>; LLM narrates</td><td>Code computes every number; narration optional and env-gated</td></tr>
+</table>
+</div>
+
+<h2>4 · Data model (<code>lib/types.ts</code>)</h2>
+<pre class="block">Lead    { id, name, email, domain, title,            // identity — never mutated
+          enrichment?, score?, routing?, suppressed?, battle_card_path? }
+Enrichment { industry, sub_vertical, employee_range, est_revenue, tech_signals[],
+             source: bitscale|nrev|public+symbolic|symbolic|llm, confidence }
+Score   { total, breakdown{dim → {bucket, points}}, tier: hot|warm|cold, dq_reason? }
+Routing { rep_id, rep, priority, sla, owner_status: existing_owner|new_assignment, reason }
+Account { domain, leads[], account_score (MAX), tier, committee_depth,
+          existing_customer, routing? }</pre>
+<p>The <code>Lead</code> accretes — each stage adds a block, none rewrites a previous one. The
+<code>Account</code> is the routing unit; leads inherit their account's routing. The same
+<code>Account</code> shape serves the Part 2 expansion book.</p>
+
+<h2>5 · Run sequence (from <code>scripts/run-pipeline.ts</code>)</h2>
+<ol>
+  <li>Ingest 30 leads; build suppression set; split acquisition vs. expansion.</li>
+  <li>Enrich all acquisition leads concurrently; assert the data contract per lead; score each
+      (pure function, safe in parallel).</li>
+  <li>Group into accounts; route each account against the ownership ledger; leads inherit;
+      new assignments written back to the ledger.</li>
+  <li>Write <code>output/routed_leads.csv</code> + <code>.json</code> (accounts + expansion book).</li>
+  <li>(Trigger.dev only) battle cards for hot/warm; decision brief vs. prior snapshot.</li>
+</ol>
+
+<h2>6 · Invariants and error handling</h2>
+<p>Enforced in code, tested offline by <code>npm run check</code> (no network, no keys):</p>
+<ul>
+  <li>30 leads in, 30 accounts out, <strong>zero unrouted</strong> (unmatched vertical → Rep C, flagged).</li>
+  <li>Every <code>breakdown</code> sums to its <code>total</code>; sentinel leads pin the rubric
+      (VP Fraud &amp; Risk @ financial ≥85 hot; manufacturing and .edu cold <strong>with</strong> <code>dq_reason</code>).</li>
+  <li>Suppression: known-customer domain must suppress; no mock lead matches a real customer.</li>
+  <li>Data contract: identity + full enrichment block per lead, or the run fails loudly.</li>
+  <li>Degradation: any failed source lowers one lead's confidence; nothing blocks the run.</li>
+  <li>Idempotency: ownership ledger + deterministic scoring → re-runs produce the same book,
+      no duplicate rows/cards/events.</li>
+</ul>
+
+<h2>7 · Security &amp; secrets</h2>
+<p>Keys live in <code>.env</code> locally (gitignored) and Trigger.dev env vars in prod — never in code
+or prompts. The zero-key path is the default; vendors and LLM activate only when their keys
+exist. No PII beyond the mock CSV enters any third party; enrichment requests send
+domain/email/title only.</p>
+
+<h2>8 · Observability</h2>
+<p>Trigger.dev: per-stage success/retries/duration, shareable run link. Langfuse: per-call
+prompt/tokens/cost/latency + groundedness eval on cards. Run-over-run: <code>memory/runs/</code>
+snapshots power the decision brief's deltas. Alert thresholds and cadence live in
+<code>OPERATIONS.md</code>.</p>
+
+<h2>9 · Alternatives considered</h2>
+<ul>
+  <li><strong>Lead-based routing</strong> — rejected: Socure's buyer is a committee; account-first matches
+      lead-to-account reality and prevents split ownership.</li>
+  <li><strong>LLM-judged scoring</strong> — rejected: scores feed tracked metrics; an LLM judge drifts
+      week-over-week and makes deltas meaningless.</li>
+  <li><strong>Always-on LLM enrichment</strong> — rejected: the cascade puts free/cheap deterministic sources
+      first; the LLM is last and bounded, so cost and failure modes stay small.</li>
+  <li><strong>Monolithic task</strong> — rejected: chained Trigger.dev tasks give per-stage retries and
+      observability; that granularity is why Trigger.dev was picked at all.</li>
+</ul>
+
+<footer>Socure Growth Engineering Exercise · source of truth: <code>docs/SYSTEM-DESIGN.md</code></footer>
+</body>
+</html>

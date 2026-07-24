@@ -1,0 +1,26 @@
+{
+  "$comment": "Enrichment waterfall config — executed by lib/enrich.ts + connections/*. Edit HERE when vendor probes reveal real column names or confidence needs tuning; never edit the executors. Waterfall ORDER is structural and lives in code (lib/enrich.ts).",
+  "version": "1.0.0",
+  "confidence": {
+    "bitscale": 0.9,
+    "nrev": 0.85,
+    "public_boost_resolves": 0.15,
+    "public_boost_no_resolve": 0.05,
+    "public_cap": 0.8,
+    "symbolic_known_vertical": 0.6,
+    "symbolic_other": 0.3,
+    "llm_ceiling": 0.6,
+    "llm_web_ceiling": 0.8
+  },
+  "llm_residue_threshold": 0.5,
+  "llm_fire_on_unfound": true,
+  "$llm_rule": "LLM fires when NO external source found the lead (vendors + public all miss), or when classification confidence < threshold. It is the waterfall's last SOURCE, not just a tiebreaker.",
+  "field_aliases": {
+    "$comment": "vendor/Play output columns are user-named — first alias found wins; verify per vendor at Block-1 probe",
+    "industry": ["industry", "company_industry", "vertical"],
+    "sub_vertical": ["sub_vertical", "sub_industry"],
+    "employee_range": ["employee_range", "employee_count", "headcount", "company_size"],
+    "est_revenue": ["est_revenue", "revenue", "annual_revenue"]
+  },
+  "tech_signal_key_pattern": "tech|stack|tool|social"
+}

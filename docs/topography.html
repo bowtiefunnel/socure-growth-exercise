@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Socure Growth Exercise — Pipeline Topography</title>
+<style>
+  :root {
+    --bg: #F7F8FA;
+    --panel: #FFFFFF;
+    --panel-2: #EEF1F5;
+    --ink: #101828;
+    --muted: #5B6472;
+    --line: #D4DAE3;
+    --line-strong: #A3ADBC;
+    --sym: #1D4ED8;
+    --sym-soft: rgba(29, 78, 216, 0.08);
+    --neural: #8B2FC9;
+    --neural-soft: rgba(139, 47, 201, 0.09);
+    --human: #B45309;
+    --human-soft: rgba(180, 83, 9, 0.10);
+    --good: #047857;
+    --good-soft: rgba(4, 120, 87, 0.09);
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    --sans: "Helvetica Neue", Helvetica, "Segoe UI", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0B0F17;
+      --panel: #121826;
+      --panel-2: #1A2233;
+      --ink: #E5EAF3;
+      --muted: #8B95A7;
+      --line: #232D40;
+      --line-strong: #3A4763;
+      --sym: #6D9CFF;
+      --sym-soft: rgba(109, 156, 255, 0.10);
+      --neural: #C084FC;
+      --neural-soft: rgba(192, 132, 252, 0.11);
+      --human: #F0A24A;
+      --human-soft: rgba(240, 162, 74, 0.12);
+      --good: #34D399;
+      --good-soft: rgba(52, 211, 153, 0.10);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #F7F8FA;
+    --panel: #FFFFFF;
+    --panel-2: #EEF1F5;
+    --ink: #101828;
+    --muted: #5B6472;
+    --line: #D4DAE3;
+    --line-strong: #A3ADBC;
+    --sym: #1D4ED8;
+    --sym-soft: rgba(29, 78, 216, 0.08);
+    --neural: #8B2FC9;
+    --neural-soft: rgba(139, 47, 201, 0.09);
+    --human: #B45309;
+    --human-soft: rgba(180, 83, 9, 0.10);
+    --good: #047857;
+    --good-soft: rgba(4, 120, 87, 0.09);
+  }
+  :root[data-theme="dark"] {
+    --bg: #0B0F17;
+    --panel: #121826;
+    --panel-2: #1A2233;
+    --ink: #E5EAF3;
+    --muted: #8B95A7;
+    --line: #232D40;
+    --line-strong: #3A4763;
+    --sym: #6D9CFF;
+    --sym-soft: rgba(109, 156, 255, 0.10);
+    --neural: #C084FC;
+    --neural-soft: rgba(192, 132, 252, 0.11);
+    --human: #F0A24A;
+    --human-soft: rgba(240, 162, 74, 0.12);
+    --good: #34D399;
+    --good-soft: rgba(52, 211, 153, 0.10);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .sheet { max-width: 1060px; margin: 0 auto; padding: 32px 24px 72px; }
+
+  /* ---------- Title block ---------- */
+  .titleblock { border: 1.5px solid var(--ink); background: var(--panel); }
+  .titleblock-main {
+    padding: 28px 28px 22px;
+    border-bottom: 1.5px solid var(--ink);
+  }
+  .titleblock h1 {
+    margin: 0 0 10px;
+    font-size: clamp(22px, 4vw, 36px);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-wrap: balance;
+    line-height: 1.14;
+  }
+  .titleblock h1 .thin { font-weight: 300; }
+  .titleblock p { margin: 0; color: var(--muted); }
+  .titleblock p b.sym-w { color: var(--sym); font-weight: 600; }
+  .titleblock p b.neural-w { color: var(--neural); font-weight: 600; }
+  .titleblock-meta {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+  .titleblock-meta div { padding: 8px 14px; border-right: 1px solid var(--line); }
+  .titleblock-meta div:last-child { border-right: 0; }
+  .titleblock-meta span {
+    display: block;
+    color: var(--muted);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 9px;
+    margin-bottom: 2px;
+  }
+
+  /* ---------- Legend ---------- */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin: 18px 2px 40px;
+    padding: 0;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+  .legend li { display: flex; align-items: center; gap: 7px; list-style: none; }
+  .swatch { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+  .swatch.sym { background: var(--sym); }
+  .swatch.neural { background: var(--neural); }
+  .swatch.human { background: var(--human); }
+  .swatch.good { background: var(--good); }
+
+  /* ---------- Section heads ---------- */
+  section { margin-bottom: 56px; }
+  .sec-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 18px; }
+  .sec-head .no { font-family: var(--mono); font-size: 12px; color: var(--muted); letter-spacing: 0.1em; }
+  .sec-head h2 { margin: 0; font-size: 17px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; }
+  .sec-head::after { content: ""; flex: 1; border-top: 1px solid var(--line); align-self: center; }
+  .sec-note { margin: -8px 0 18px; color: var(--muted); font-size: 13.5px; max-width: 72ch; }
+  .sec-note code, .stage code, .cascade code, .plane code {
+    font-family: var(--mono);
+    font-size: 0.88em;
+    background: var(--panel-2);
+    padding: 1px 5px;
+  }
+
+  /* ---------- Pipeline rail ---------- */
+  .rail { border: 1.5px solid var(--line-strong); background: var(--panel); }
+  .stage {
+    display: grid;
+    grid-template-columns: 64px 1fr 240px;
+    border-bottom: 1px solid var(--line);
+  }
+  .stage:last-child { border-bottom: 0; }
+  .stage-no {
+    position: relative;
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 700;
+    padding: 18px 0 0 20px;
+    color: var(--sym);
+    font-variant-numeric: tabular-nums;
+  }
+  .stage-no::after {
+    content: "";
+    position: absolute;
+    left: 27px;
+    top: 44px;
+    bottom: -1px;
+    border-left: 1.5px solid var(--line);
+  }
+  .stage:last-child .stage-no::after { display: none; }
+  .stage.neural-stage .stage-no { color: var(--neural); }
+  .stage-body { padding: 16px 18px 18px 6px; }
+  .stage-body h3 {
+    margin: 0 0 4px;
+    font-size: 14.5px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .stage-body p { margin: 0; font-size: 13px; color: var(--muted); max-width: 58ch; }
+  .stage-exec {
+    margin-top: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .stage-exec b { font-weight: 400; color: var(--ink); }
+  .stage-side {
+    padding: 16px 18px;
+    border-left: 1px solid var(--line);
+    background: var(--panel);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: flex-start;
+  }
+  .stage-side .invariant {
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--good);
+  }
+  .stage-side .invariant::before { content: "▸ "; }
+  .chip-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border: 1px solid var(--line-strong);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .chip.sym { border-color: var(--sym); color: var(--sym); background: var(--sym-soft); }
+  .chip.neural { border-color: var(--neural); color: var(--neural); background: var(--neural-soft); }
+  .chip.human { border-color: var(--human); color: var(--human); background: var(--human-soft); }
+  .branch {
+    margin: 10px 0 0;
+    padding: 8px 12px;
+    border: 1px dashed var(--line-strong);
+    background: var(--panel-2);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    max-width: 46ch;
+  }
+  .branch b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- Enrichment cascade ---------- */
+  .cascade { border: 1.5px solid var(--line-strong); background: var(--panel); padding: 20px; }
+  .cascade-row {
+    display: grid;
+    grid-template-columns: 190px 1fr 56px;
+    gap: 14px;
+    align-items: center;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .cascade-row:last-of-type { border-bottom: 0; }
+  .cascade-name { font-family: var(--mono); font-size: 12.5px; }
+  .cascade-name small { display: block; font-size: 10px; color: var(--muted); }
+  .bar-track { position: relative; height: 14px; background: var(--panel-2); }
+  .bar {
+    position: absolute;
+    inset: 0 auto 0 0;
+    background: var(--sym);
+    opacity: 0.85;
+  }
+  .bar.free { background: var(--good); }
+  .bar.llm { background: var(--neural); }
+  .bar-track .clamp {
+    position: absolute;
+    left: 60%;
+    top: -4px;
+    bottom: -4px;
+    border-left: 2px dashed var(--human);
+  }
+  .cascade-val {
+    font-family: var(--mono);
+    font-size: 12px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .cascade-foot {
+    margin: 14px 2px 0;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .cascade-foot .clamp-key { color: var(--human); }
+
+  /* ---------- Authority scoreboard ---------- */
+  .board { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+  .tile {
+    border: 1.5px solid var(--line-strong);
+    background: var(--panel);
+    padding: 16px 16px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .tile .v {
+    font-family: var(--mono);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .tile.neural-t { border-color: var(--neural); background: var(--neural-soft); }
+  .tile.neural-t .v { color: var(--neural); }
+  .tile.good-t .v { color: var(--good); }
+  .tile .k {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .tile p { margin: 2px 0 0; font-size: 11.5px; color: var(--muted); line-height: 1.45; }
+  .board-verdict {
+    margin: 16px 2px 0;
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+  .board-verdict b { color: var(--good); }
+
+  /* ---------- Control plane ---------- */
+  .plane { border: 1.5px solid var(--line-strong); background: var(--panel); }
+  .plane-row {
+    display: grid;
+    grid-template-columns: 150px 250px 1fr;
+    border-bottom: 1px solid var(--line);
+  }
+  .plane-row:last-child { border-bottom: 0; }
+  .plane-row > div { padding: 12px 16px; }
+  .plane-k {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-top: 15px !important;
+  }
+  .plane-choice { font-size: 13.5px; font-weight: 600; border-left: 1px solid var(--line); }
+  .plane-choice small { display: block; font-weight: 400; font-family: var(--mono); font-size: 10.5px; color: var(--muted); margin-top: 2px; }
+  .plane-why { font-size: 12.5px; color: var(--muted); border-left: 1px solid var(--line); }
+
+  /* ---------- Data model ---------- */
+  .chain {
+    border: 1.5px solid var(--line-strong);
+    background: var(--panel);
+    padding: 18px 20px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    overflow-x: auto;
+  }
+  .chain-line { white-space: nowrap; }
+  .chain-line b { color: var(--sym); font-weight: 700; }
+  .chain-line i { font-style: normal; color: var(--muted); }
+  .chain p { margin: 10px 0 0; font-family: var(--sans); font-size: 12.5px; color: var(--muted); white-space: normal; }
+
+  footer {
+    margin-top: 64px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 820px) {
+    .titleblock-meta { grid-template-columns: 1fr 1fr; }
+    .titleblock-meta div { border-bottom: 1px solid var(--line); }
+    .stage { grid-template-columns: 48px 1fr; }
+    .stage-no { padding-left: 14px; }
+    .stage-no::after { left: 21px; }
+    .stage-side {
+      grid-column: 2;
+      border-left: 0;
+      border-top: 1px dashed var(--line);
+      padding: 10px 18px 16px 6px;
+    }
+    .cascade-row { grid-template-columns: 1fr; gap: 6px; }
+    .cascade-val { text-align: left; }
+    .board { grid-template-columns: 1fr 1fr; }
+    .plane-row { grid-template-columns: 1fr; }
+    .plane-choice, .plane-why { border-left: 0; padding-top: 0; }
+    .plane-k { padding-bottom: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+
+  <header class="titleblock">
+    <div class="titleblock-main">
+      <div>
+        <h1>Socure Growth Exercise <span class="thin">/ Pipeline Topography</span></h1>
+        <p>30 mock leads → suppress → enrich → score → route → enable. A <b class="sym-w">deterministic pipeline</b> with exactly <b class="neural-w">two gated language leaves</b> — the LLM appears only where language is the deliverable or the world is genuinely ambiguous; code decides everything a metric tracks.</p>
+      </div>
+    </div>
+    <div class="titleblock-meta">
+      <div><span>Document</span>Socure.ARCHITECTURE.md</div>
+      <div><span>Stages</span>8</div>
+      <div><span>LLM touchpoints</span>3 (Claude Haiku)</div>
+      <div><span>Neural authority</span>0/30 tiers · 0/30 routes</div>
+    </div>
+  </header>
+
+  <ul class="legend">
+    <li><span class="swatch sym"></span>symbolic · code decides</li>
+    <li><span class="swatch neural"></span>neural · LLM touchpoint</li>
+    <li><span class="swatch human"></span>human gate</li>
+    <li><span class="swatch good"></span>invariant held</li>
+  </ul>
+
+  <section aria-labelledby="s1">
+    <div class="sec-head"><span class="no">01</span><h2 id="s1">Pipeline rail</h2></div>
+    <p class="sec-note">Eight stages, run as Trigger.dev tasks. Every stage names its executor, its decision source, and the invariant the run must hold.</p>
+    <div class="rail">
+
+      <div class="stage">
+        <div class="stage-no">1</div>
+        <div class="stage-body">
+          <h3>Ingest</h3>
+          <p>Parse 30 leads; identity fields (name / email / domain / title) are never mutated.</p>
+          <div class="stage-exec"><b>lib/csv.ts</b></div>
+        </div>
+        <div class="stage-side">
+          <div class="chip-row"><span class="chip sym">Symbolic</span></div>
+          <div class="invariant">30/30 identity intact</div>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="stage-no">2</div>
+        <div class="stage-body">
+          <h3>Gate 0 — Suppress</h3>
+          <p>Registrable-domain match against the 34-customer list. Known customers are never enriched on acquisition spend.</p>
+          <div class="stage-exec"><b>lib/suppression.ts</b> + data/socure-customer-list.csv · decides by set membership</div>
+          <div class="branch"><b>→ expansion book</b> — suppressed accounts are routed, never dropped; Part 2 re-points enrich→score→route at this book</div>
+        </div>
+        <div class="stage-side">
+          <div class="chip-row"><span class="chip sym">Symbolic</span></div>
+          <div class="invariant">suppressed → expansion, never dropped</div>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="stage-no">3</div>
+        <div class="stage-body">
+          <h3>Account resolution</h3>
+          <p>Group leads into accounts by registrable domain; <code>account.score = MAX(leads)</code>; ownership-ledger check.</p>
+          <div class="stage-exec"><b>lib/domain.ts · lib/ownership.ts</b> + memory/account-owners.json</div>
+        </div>
+        <div class="stage-side">
+          <div class="chip-row"><span class="chip sym">Symbolic</span></div>
+          <div class="invariant">owned accounts keep their owner</div>
+        </div>
+      </div>
+
+      <div class="stage neural-stage">
+        <div class="stage-no">4</div>
+        <div class="stage-body">
+          <h3>Enrich — cascade</h3>
+          <p>Waterfall of sources by confidence (§02). The LLM is the residue: classifies, never scores; fires only when every source misses or confidence &lt; 0.5; output clamped to ≤ 0.6 in code.</p>
+          <div class="stage-exec"><b>connections/* · lib/enrich.ts</b> · config/enrichment.json</div>
+        </div>
+        <div class="stage-side">
+          <div class="chip-row"><span class="chip sym">Symbolic</span><span class="chip neural">+ bounded neural</span></div>
+          <div class="invariant">every field carries source + confidence — assertEnrichmentContract</div>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="stage-no">5</div>
+        <div class="stage-body">
+          <h3>Score</h3>
+          <p>4-dimension rubric, 0–100: hot ≥ 75 · warm 50–74 · cold &lt; 50. Vertical matches domain evidence first — an LLM label never overrides a domain keyword.</p>
+          <div class="stage-exec"><b>lib/scoring.ts</b> · config/icp-rubric.json (hard rule: feeds tracked metrics)</div>
+        </div>
+        <div class="stage-side">
+          <div class="chip-row"><span class="chip sym">Symbolic</span></div>
+          <div class="invariant">every score ships breakdown · every DQ ships dq_reason</div>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="stage-no">6</div>
+        <div class="stage-body">
+          <h3>Route</h3>
+          <p>Owned → owner, never reassigned. Unowned → vertical→rep rules; tier → P1/P2/P3; unmatched vertical → Rep C, flagged.</p>
+          <div class="stage-exec"><b>lib/routing.ts</b> · config/routing-rules.json</div>
+        </div>
+        <div class="stage-side">
+          <div class="chip-row"><span class="chip sym">Symbolic</span></div>
+          <div class="invariant">zero unrouted — run fails loudly otherwise</div>
+        </div>
+      </div>
+
+      <div class="stage neural-stage">
+        <div class="stage-no">7</div>
+        <div class="stage-body">
+          <h3>Enable — battle cards</h3>
+          <p>Hot/warm accounts only. 7-section card from approved proof points; Langfuse groundedness eval — an uncited claim fails the card before a rep sees it.</p>
+          <div class="stage-exec"><b>tools/battle-card.ts</b> + prompts/battle-card.md · grounding corpus + blocklist/allowlist</div>
+        </div>
+        <div class="stage-side">
+          <div class="chip-row"><span class="chip neural">Neural</span><span class="chip human">→ human gate</span></div>
+          <div class="invariant">battle_cards/&lt;domain&gt;.md — rep reviews before use (outward-facing: never graduates)</div>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="stage-no">8</div>
+        <div class="stage-body">
+          <h3>Decision brief</h3>
+          <p>Code computes deltas vs. prior run, enrichment trust score, projections, 4Ws recommendations. The LLM optionally narrates the computed numbers — it never computes them.</p>
+          <div class="stage-exec"><b>tools/decision-brief.ts</b> + memory/runs/ · 0-100-5</div>
+        </div>
+        <div class="stage-side">
+          <div class="chip-row"><span class="chip sym">Symbolic</span><span class="chip neural">narration only</span></div>
+          <div class="invariant">decision_brief.md + brief.json</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section aria-labelledby="s2">
+    <div class="sec-head"><span class="no">02</span><h2 id="s2">Enrichment cascade</h2></div>
+    <p class="sec-note">Sources tried in confidence order; a fallback is never dressed as vendor data. Vendors are env-gated and probe-first — response shape verified on 1 lead before spending on 30.</p>
+    <div class="cascade">
+      <div class="cascade-row">
+        <div class="cascade-name">Bitscale <small>vendor · env-gated</small></div>
+        <div class="bar-track"><span class="bar" style="width: 90%;"></span></div>
+        <div class="cascade-val">0.90</div>
+      </div>
+      <div class="cascade-row">
+        <div class="cascade-name">nRev <small>vendor · env-gated</small></div>
+        <div class="bar-track"><span class="bar" style="width: 85%;"></span></div>
+        <div class="cascade-val">0.85</div>
+      </div>
+      <div class="cascade-row">
+        <div class="cascade-name">DNS MX + RDAP <small>free · keyless · live truth</small></div>
+        <div class="bar-track"><span class="bar free" style="width: 75%;"></span></div>
+        <div class="cascade-val">0.75</div>
+      </div>
+      <div class="cascade-row">
+        <div class="cascade-name">Symbolic inference <small>code heuristics</small></div>
+        <div class="bar-track"><span class="bar" style="width: 60%;"></span></div>
+        <div class="cascade-val">0.60</div>
+      </div>
+      <div class="cascade-row">
+        <div class="cascade-name">LLM residue <small>classifies · never scores</small></div>
+        <div class="bar-track"><span class="bar llm" style="width: 60%;"></span><span class="clamp" aria-hidden="true"></span></div>
+        <div class="cascade-val">≤ 0.60</div>
+      </div>
+      <p class="cascade-foot"><span class="clamp-key">┊ code clamp</span> — the LLM fires only when every source above misses or confidence &lt; 0.5, and its confidence is capped in code, not by prompt.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="s3">
+    <div class="sec-head"><span class="no">03</span><h2 id="s3">Measured neural authority — live run</h2></div>
+    <div class="board">
+      <div class="tile neural-t">
+        <span class="v">26/30</span>
+        <span class="k">LLM-touched leads</span>
+        <p>Mock domains — vendors and public sources miss; rare on real data.</p>
+      </div>
+      <div class="tile good-t">
+        <span class="v">0/30</span>
+        <span class="k">Tiers decided by LLM</span>
+        <p>Every hot/warm/cold call made by the rubric.</p>
+      </div>
+      <div class="tile good-t">
+        <span class="v">0/30</span>
+        <span class="k">Routes decided by LLM</span>
+        <p>Every rep assignment made by rules + ledger.</p>
+      </div>
+      <div class="tile">
+        <span class="v">1</span>
+        <span class="k">Within-tier score nudge</span>
+        <p>Only where the domain carried no evidence at all.</p>
+      </div>
+      <div class="tile good-t">
+        <span class="v">0–1</span>
+        <span class="k">LLM vs. domain keyword</span>
+        <p>In its only conflict with domain evidence, the LLM lost.</p>
+      </div>
+    </div>
+    <p class="board-verdict">Coverage ≠ authority: the model touched 26 leads and decided <b>zero</b> tracked outputs.</p>
+  </section>
+
+  <section aria-labelledby="s4">
+    <div class="sec-head"><span class="no">04</span><h2 id="s4">Control plane</h2></div>
+    <div class="plane">
+      <div class="plane-row">
+        <div class="plane-k">Orchestration</div>
+        <div class="plane-choice">Trigger.dev <small>TypeScript tasks · cloud-deployed · npm run pipeline needs zero keys</small></div>
+        <div class="plane-why">Per-stage retries, structured logs, shareable run link — "it runs" is a live artifact and pipeline-health instrumentation comes free.</div>
+      </div>
+      <div class="plane-row">
+        <div class="plane-k">LLM</div>
+        <div class="plane-choice">Claude Haiku <small>exactly 3 touchpoints: enrichment residue · battle cards · brief narration</small></div>
+        <div class="plane-why">Cards and narration are language deliverables; everything a metric tracks stays in cheaper, testable code.</div>
+      </div>
+      <div class="plane-row">
+        <div class="plane-k">Observability</div>
+        <div class="plane-choice">Langfuse <small>prompt · tokens · cost · latency per call</small></div>
+        <div class="plane-why">Groundedness eval per battle card; LLM spend is a dashboard number, not a surprise.</div>
+      </div>
+      <div class="plane-row">
+        <div class="plane-k">Delivery</div>
+        <div class="plane-choice">Slack <small>production rail via Trigger.dev — not in the demo run</small></div>
+        <div class="plane-why">P1 hot-lead alert + battle card to the routed rep; run summary + threshold alerts to ops; Part 2 reuses the rail for CSM expansion alerts. Reps live in Slack — the routed lead lands where the SLA clock starts.</div>
+      </div>
+      <div class="plane-row">
+        <div class="plane-k">Decision logic</div>
+        <div class="plane-choice">config/ <small>icp-rubric.json · routing-rules.json · enrichment.json</small></div>
+        <div class="plane-why">Changing the ICP or territories is a config edit, never a code edit; the rubric carries its evidence citations inline.</div>
+      </div>
+      <div class="plane-row">
+        <div class="plane-k">Outputs</div>
+        <div class="plane-choice">Four artifacts <small>routed_leads.csv/.json · battle_cards/*.md · decision_brief.md + brief.json</small></div>
+        <div class="plane-why">CSV for the brief's deliverable, JSON for machines, cards for reps, brief for the operator.</div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="s5">
+    <div class="sec-head"><span class="no">05</span><h2 id="s5">Data model</h2></div>
+    <div class="chain">
+      <div class="chain-line"><b>Lead</b> <i>(source fields never mutated)</i> → enrichment{source, confidence} → score{total, breakdown, tier} → routing{rep, priority, owner_status}</div>
+      <p>One Lead accretes; leads group into an Account by registrable domain. The same account shape serves both bowtie sides — Part 2 re-points enrich→score→route at the expansion book.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Distilled from docs/Socure.ARCHITECTURE.md — one-page architecture, Socure growth exercise.</span>
+    <span>socure-growth-exercise · sheet 1/1</span>
+  </footer>
+
+</div>
+</body>
+</html>

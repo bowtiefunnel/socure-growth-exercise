@@ -1,0 +1,21 @@
+{
+  "name": "socure-growth-exercise",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "tsx --env-file-if-exists=.env scripts/selfcheck.ts",
+    "pipeline": "tsx --env-file-if-exists=.env scripts/run-pipeline.ts",
+    "dev": "npx trigger.dev@4.5.7 dev",
+    "deploy": "npx trigger.dev@4.5.7 deploy"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.57.0",
+    "@trigger.dev/sdk": "^4.5.7",
+    "langfuse": "^3.32.0"
+  },
+  "devDependencies": {
+    "@trigger.dev/build": "^4.5.7",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.4"
+  }
+}

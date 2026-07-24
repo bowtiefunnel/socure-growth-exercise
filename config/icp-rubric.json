@@ -1,0 +1,122 @@
+{
+  "$comment": "Compiled from docs/icp-blueprint.md + docs/icp-profile.html. Human-readable source of truth is the blueprint; this file is what score.ts executes. Change the ICP by editing this config, never the code.",
+  "version": "1.0.0",
+  "dimensions": {
+    "vertical_fit": {
+      "max": 35,
+      "match_on": ["domain", "enrichment.industry"],
+      "buckets": [
+        {
+          "name": "finserv_fintech_payments",
+          "points": 35,
+          "evidence": "logo-proven (24/43 customer accounts)",
+          "keywords": ["bank", "financial", "finance", "lending", "loan", "capital", "payment", "fintech", "credit", "cu.org", "invest", "wealth", "crypto"]
+        },
+        {
+          "name": "gov_healthcare_insurance",
+          "points": 30,
+          "evidence": "gov logo-proven (7/43); healthcare/insurance = ICP-plausible whitespace",
+          "keywords": [".gov", "gov.", "municipal", "lottery", "state", "health", "patient", "care", "insurance", "insure", "benefits"]
+        },
+        {
+          "name": "retail_ecommerce_marketplace",
+          "points": 20,
+          "evidence": "logo-proven at lower density (Uber, Poshmark, Angi tier)",
+          "keywords": ["retail", "commerce", "ecommerce", "marketplace", "shop"]
+        },
+        {
+          "name": "other",
+          "points": 5,
+          "evidence": "zero representation in 43-logo base",
+          "keywords": []
+        }
+      ]
+    },
+    "buyer_persona": {
+      "max": 30,
+      "match_on": ["title"],
+      "buckets": [
+        {
+          "name": "fraud_risk_identity",
+          "points": 30,
+          "keywords": ["fraud", "risk", "identity", "loss prevention"]
+        },
+        {
+          "name": "compliance_aml",
+          "points": 28,
+          "keywords": ["compliance", "aml", "bsa", "regulatory"]
+        },
+        {
+          "name": "underwriting_claims_trust_safety",
+          "points": 22,
+          "keywords": ["underwriting", "claims", "trust & safety", "trust and safety", "customer trust"]
+        },
+        {
+          "name": "product_growth",
+          "points": 18,
+          "keywords": ["product", "growth", "digital", "ecommerce", "revenue cycle", "member services", "patient access", "benefits program"]
+        },
+        {
+          "name": "it_eng",
+          "points": 15,
+          "keywords": ["it ", "it security", "cio", "cto", "engineering", "technology"]
+        },
+        {
+          "name": "other",
+          "points": 5,
+          "keywords": []
+        }
+      ],
+      "$tie_break": "first matching bucket wins, ordered as listed (fraud beats IT for 'Director of Fraud IT Systems')"
+    },
+    "seniority": {
+      "max": 20,
+      "match_on": ["title"],
+      "buckets": [
+        { "name": "c_level", "points": 20, "keywords": ["chief", "cro", "cco", "cto", "cio", "cdo", "president"] },
+        { "name": "vp_head_director", "points": 15, "keywords": ["vp", "svp", "evp", "vice president", "head of", "director", "managing director"] },
+        { "name": "manager_lead", "points": 8, "keywords": ["manager", "lead"] },
+        { "name": "other", "points": 3, "keywords": [] }
+      ],
+      "$note": "Deputy CIO scores c_level via 'cio'. Registrar has no seniority keyword -> other (3)."
+    },
+    "fit_keywords": {
+      "max": 15,
+      "match_on": ["title", "domain"],
+      "points_per_distinct_match": 5,
+      "keywords": ["fraud", "risk", "compliance", "identity", "trust", "kyc", "aml"],
+      "$note": "graduated: 5 points per DISTINCT keyword found across title+domain, capped at 15"
+    }
+  },
+  "tiers": [
+    { "name": "hot",  "label": "Tier 1 — Must-Win",     "min": 75, "priority": "P1", "sla": "same-day", "battle_card": true },
+    { "name": "warm", "label": "Tier 2 — Standard Fit", "min": 50, "priority": "P2", "sla": "48h",      "battle_card": true },
+    { "name": "cold", "label": "Tier 3 — Nurture/DQ",   "min": 0,  "priority": "P3", "sla": "nurture",  "battle_card": false }
+  ],
+  "disqualifiers": {
+    "$comment": "Negative ICP (blueprint section 4). Rubric already sinks these below 50; flags exist to attach dq_reason — a scored zero and a reasoned zero are different products. Never raises a score.",
+    "flags": [
+      { "id": "no_regulated_onboarding", "match_on": "domain", "keywords": ["manufacturing", "logistics", "fleet", ".edu"], "reason": "No digital identity-decisioning use case (43/43 customer logos run consumer-scale onboarding; this segment has zero representation)" }
+    ],
+    "enrichment_stage_flags": [
+      { "id": "sub_scale_volume", "reason": "< ~50k identity decisions/yr [assumed threshold]" },
+      { "id": "no_us_applicant_base", "reason": "Identity Graph is US-centric; international HQ fine (Nubank/Revolut precedent), absent US flow is not" },
+      { "id": "on_prem_only", "reason": "Cannot consume API / contribute to consortium" }
+    ]
+  },
+  "suppression": {
+    "$comment": "Gate 0 — runs before scoring or any enrichment spend.",
+    "source": "data/socure-customer-list.csv",
+    "match": "registrable_domain(lead.domain) OR registrable_domain(lead.email) IN customer_domain_set",
+    "on_match": { "tag": "existing_customer", "action": "route_to_expansion_pipeline", "skip_acquisition": true }
+  },
+  "extension_modifiers": {
+    "$comment": "Documented, NOT active — mock CSV carries no intent/trigger data. Activate per-signal when enrichment provides them (blueprint section 5). Cap total score at 100.",
+    "active": false,
+    "modifiers": [
+      { "id": "trigger_event_live", "points": 10 },
+      { "id": "high_intent_signal", "points_range": [8, 15] },
+      { "id": "negative_icp_confirmed", "points": -20 }
+    ]
+  }
+}

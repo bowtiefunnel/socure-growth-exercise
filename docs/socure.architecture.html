@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Socure Pipeline — Architecture (One Page)</title>
+<style>
+  :root { --ink:#1a1d23; --muted:#5b6472; --line:#d9dde4; --bg:#ffffff; --panel:#f5f7fa;
+          --sym:#0b6e4f; --neu:#8a4d0f; --hum:#7c3aed; }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink:#e6e9ee; --muted:#9aa4b2; --line:#333a45; --bg:#14171c; --panel:#1d222a;
+            --sym:#4cc294; --neu:#e0a561; --hum:#b79bf5; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0 auto; padding:2.2rem 1.4rem 4rem; max-width:920px; background:var(--bg);
+         color:var(--ink); font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+  h1 { font-size:1.55rem; margin:0 0 .3rem; }
+  h2 { font-size:1.12rem; margin:2rem 0 .6rem; border-bottom:1px solid var(--line); padding-bottom:.3rem; }
+  p.lede { color:var(--muted); margin:.2rem 0 1.2rem; max-width:62rem; }
+  strong { font-weight:650; }
+  pre.diagram { background:var(--panel); border:1px solid var(--line); border-radius:8px;
+                padding:1rem; overflow-x:auto; font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace; }
+  .tablewrap { overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; font-size:.86rem; }
+  th, td { border:1px solid var(--line); padding:.45rem .55rem; text-align:left; vertical-align:top; }
+  th { background:var(--panel); font-weight:650; }
+  code { background:var(--panel); border:1px solid var(--line); border-radius:4px;
+         padding:.05rem .3rem; font:.82em ui-monospace,SFMono-Regular,Menlo,monospace; }
+  .b { display:inline-block; font-size:.7rem; font-weight:700; letter-spacing:.04em;
+       padding:.08rem .4rem; border-radius:99px; border:1px solid currentColor; white-space:nowrap; }
+  .sym { color:var(--sym); } .neu { color:var(--neu); } .hum { color:var(--hum); }
+  .note { background:var(--panel); border-left:3px solid var(--sym); border-radius:0 8px 8px 0;
+          padding:.7rem .9rem; margin:1rem 0; font-size:.92rem; }
+  footer { margin-top:2.5rem; color:var(--muted); font-size:.8rem; }
+</style>
+</head>
+<body>
+
+<h1>Architecture — One Page</h1>
+<p class="lede">30 mock leads → suppress → enrich → score → route → enable.
+<strong>Deterministic pipeline (0-100-0 core) with two gated language leaves</strong> —
+the LLM appears only where language is the deliverable or the world is genuinely ambiguous;
+code decides everything a metric tracks.</p>
+
+<pre class="diagram">data/leads.csv ─► ingest ─► GATE 0 suppress ─► account-resolve ─► enrich ─► score ─► route ─► enable
+                            (34 customers →     (group by domain,  cascade    rubric   rules +  battle cards (LLM,
+                             expansion book)     ownership ledger)                     ledger   eval'd + rep-gated)
+                                                                                                + decision brief</pre>
+
+<h2>Step by step</h2>
+<div class="tablewrap">
+<table>
+<tr><th>#</th><th>Stage</th><th>What happens</th><th>Executor / API</th><th>Tier</th><th>Decision source</th><th>Output / invariant</th></tr>
+<tr><td>1</td><td><strong>Ingest</strong></td><td>Parse 30 leads; identity fields (name/email/domain/title) never mutated</td><td><code>lib/csv.ts</code></td><td><span class="b sym">SYMBOLIC</span></td><td>—</td><td><code>Lead</code> objects; 30/30 identity intact</td></tr>
+<tr><td>2</td><td><strong>Gate 0 — suppress</strong></td><td>Registrable-domain match vs. known-customer list → expansion book; never enriched on acquisition spend</td><td><code>lib/suppression.ts</code> + customer CSV</td><td><span class="b sym">SYMBOLIC</span></td><td>customer list (set membership)</td><td>Suppressed accounts routed to expansion, never dropped</td></tr>
+<tr><td>3</td><td><strong>Account resolution</strong></td><td>Group leads → accounts by registrable domain; <code>account.score = MAX(leads)</code>; ownership-ledger check</td><td><code>lib/domain.ts</code>, <code>lib/ownership.ts</code></td><td><span class="b sym">SYMBOLIC</span></td><td>ownership ledger</td><td>Accounts; owned accounts keep their owner</td></tr>
+<tr><td>4</td><td><strong>Enrich — cascade</strong></td><td>Bitscale (0.9) → nRev (0.85) → DNS MX/RDAP (0.75, free/keyless) → symbolic (0.6) → <strong>LLM residue</strong> (≤0.6 code-clamped; classifies, never scores; fires only when all sources miss or confidence &lt;0.5)</td><td><code>connections/*</code>, <code>lib/enrich.ts</code></td><td><span class="b sym">SYMBOLIC</span> + <span class="b neu">NEURAL</span> (bounded)</td><td><code>config/enrichment.json</code></td><td>Every field carries <code>source</code> + <code>confidence</code>; contract asserted in code</td></tr>
+<tr><td>5</td><td><strong>Score</strong></td><td>4-dimension rubric, 0–100; hot ≥75 · warm 50–74 · cold &lt;50; domain evidence outranks LLM labels</td><td><code>lib/scoring.ts</code></td><td><span class="b sym">SYMBOLIC</span> (feeds tracked metrics)</td><td><code>config/icp-rubric.json</code></td><td>Every score ships <code>breakdown</code>; every DQ ships <code>dq_reason</code></td></tr>
+<tr><td>6</td><td><strong>Route</strong></td><td>Owned → owner (never reassigned); unowned → vertical→rep rules; tier → P1/P2/P3; unmatched → Rep C, flagged</td><td><code>lib/routing.ts</code></td><td><span class="b sym">SYMBOLIC</span></td><td><code>config/routing-rules.json</code></td><td><strong>Zero unrouted</strong> — run fails loudly otherwise</td></tr>
+<tr><td>7</td><td><strong>Enable — battle cards</strong></td><td>Hot/warm accounts only; 7-section card; approved proof points only; Langfuse groundedness eval (uncited claim = failed card)</td><td><code>tools/battle-card.ts</code> + <code>prompts/battle-card.md</code></td><td><span class="b neu">NEURAL</span> → <span class="b hum">HUMAN</span></td><td>grounding corpus + blocklist/allowlist</td><td><code>battle_cards/&lt;domain&gt;.md</code>; rep reviews before use (never-graduate)</td></tr>
+<tr><td>8</td><td><strong>Decision brief</strong></td><td>Code computes deltas vs. prior run, enrichment trust score, projections, 4Ws recommendations; LLM optionally narrates the computed numbers — never computes</td><td><code>tools/decision-brief.ts</code> + <code>memory/runs/</code></td><td><span class="b sym">SYMBOLIC</span> (0-100-5)</td><td>prior-run snapshot</td><td><code>decision_brief.md</code> + <code>brief.json</code></td></tr>
+</table>
+</div>
+
+<h2>Architecture note — tools/APIs, hosting, data model, why</h2>
+<div class="tablewrap">
+<table>
+<tr><th>Concern</th><th>Choice</th><th>Why</th></tr>
+<tr><td>Hosting &amp; orchestration</td><td><strong>Trigger.dev</strong> (TypeScript tasks, cloud-deployed); local <code>npm run pipeline</code> needs zero keys</td><td>Per-stage retries, structured logs, shareable run link — "it runs" is a live artifact, and pipeline-health instrumentation comes free</td></tr>
+<tr><td>Enrichment APIs</td><td><strong>Bitscale</strong> (0.9) → <strong>nRev</strong> (0.85) → <strong>DNS MX + RDAP</strong> (0.75, free/keyless) → symbolic → LLM residue</td><td>Brief asks for a free/public method — DNS/RDAP return live truth even on mock domains. Vendors are env-gated and probe-first (verify response shape on 1 lead before spending on 30); a fallback is never dressed as vendor data</td></tr>
+<tr><td>LLM</td><td><strong>Claude Haiku</strong> (Anthropic API) at exactly 3 touchpoints: enrichment residue, battle cards, brief narration</td><td>Cards and narration are language deliverables; everything a metric tracks stays in cheaper, testable code</td></tr>
+<tr><td>LLM observability</td><td><strong>Langfuse</strong> — traces every call (prompt, tokens, cost, latency) + groundedness eval per battle card</td><td>An uncited claim fails the card before a rep sees it; LLM spend is a dashboard number, not a surprise</td></tr>
+<tr><td>Delivery &amp; alerting</td><td><strong>Slack</strong> (via Trigger.dev task — production rail, not in the demo run): P1 hot-lead alert + battle card to the routed rep; run summary + threshold alerts to ops; Part 2 reuses the rail for CSM expansion alerts</td><td>Reps live in Slack, not in CSV files — the routed lead has to land where the SLA clock starts</td></tr>
+<tr><td>Decision logic</td><td>All in <code>config/</code> (<code>icp-rubric.json</code>, <code>routing-rules.json</code>, <code>enrichment.json</code>)</td><td>Changing the ICP or territories is a config edit, never a code edit; the rubric carries its evidence citations inline</td></tr>
+<tr><td>Outputs</td><td><code>routed_leads.csv/.json</code> · <code>battle_cards/*.md</code> · <code>decision_brief.md</code> + <code>brief.json</code></td><td>CSV for the brief's deliverable, JSON for machines, cards for reps, brief for the operator</td></tr>
+</table>
+</div>
+
+<h2>Data model</h2>
+<p>One <code>Lead</code> accretes (source fields never mutated), grouped into <code>Account</code>:</p>
+<pre class="diagram">{ lead → enrichment{source,confidence} → score{total,breakdown,tier} → routing{rep,priority,owner_status} }</pre>
+<p>The same account shape serves both bowtie sides — Part 2 re-points enrich→score→route at the expansion book.</p>
+
+<h2>Measured neural authority (live run)</h2>
+<div class="note">
+LLM-touched enrichment: <strong>26/30 leads</strong> (mock domains — vendors/public sources miss; rare on real data).
+Neural authority over tracked outputs: <strong>0/30 tiers, 0/30 routes</strong>; one within-tier score nudge where the
+domain carried no evidence; in its only conflict with a domain keyword, the LLM lost. <strong>Coverage ≠ authority.</strong>
+</div>
+<p><strong>Patterns deliberately not used:</strong> ReAct · plan-and-execute · orchestrator–worker · ToT ·
+ensemble · reflexion — the full flowchart is drawable before runtime, so model-driven control flow adds only
+cost and failure modes. Learning loop (rep accept/decline ledger retuning weights) is a documented extension.</p>
+
+<footer>Socure Growth Engineering Exercise · source of truth: <code>docs/ARCHITECTURE.md</code></footer>
+</body>
+</html>

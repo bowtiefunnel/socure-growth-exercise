@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Socure ICP Profile — Growth Engineering Exercise</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --panel:#ffffff; --ink:#161a20; --muted:#5b6472; --line:#e4e7ec;
+    --accent:#1f6feb; --accent-soft:#e8f0fe; --hot:#c2410c; --warm:#a16207; --cold:#64748b;
+    --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.1);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#0d1117; --panel:#161b22; --ink:#e6edf3; --muted:#9aa4b2; --line:#283039;
+      --accent:#58a6ff; --accent-soft:#12233d; --hot:#fb923c; --warm:#fbbf24; --cold:#94a3b8;
+      --shadow:0 1px 2px rgba(0,0,0,.4);}
+  }
+  :root[data-theme="dark"]{ --bg:#0d1117; --panel:#161b22; --ink:#e6edf3; --muted:#9aa4b2; --line:#283039; --accent:#58a6ff; --accent-soft:#12233d; --hot:#fb923c; --warm:#fbbf24; --cold:#94a3b8; --shadow:0 1px 2px rgba(0,0,0,.4);}
+  :root[data-theme="light"]{ --bg:#f7f8fa; --panel:#ffffff; --ink:#161a20; --muted:#5b6472; --line:#e4e7ec; --accent:#1f6feb; --accent-soft:#e8f0fe; --hot:#c2410c; --warm:#a16207; --cold:#64748b; --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.1);}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;padding:32px 20px 64px}
+  .wrap{max-width:980px;margin:0 auto}
+  header{margin-bottom:8px}
+  .kicker{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  h1{font-size:28px;margin:6px 0 4px;letter-spacing:-.02em}
+  .sub{color:var(--muted);font-size:14px}
+  .disclaimer{background:var(--accent-soft);border:1px solid var(--line);border-radius:10px;
+    padding:12px 14px;margin:20px 0 28px;font-size:13px;color:var(--muted)}
+  h2{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);
+    margin:36px 0 14px;border-bottom:1px solid var(--line);padding-bottom:8px}
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
+  .card h3{margin:0 0 2px;font-size:16px}
+  .card .role{color:var(--accent);font-size:12px;font-weight:600;margin-bottom:10px}
+  .card dl{margin:0;font-size:13px}
+  .card dt{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em;margin-top:10px}
+  .card dd{margin:2px 0 0}
+  .scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+  table{border-collapse:collapse;width:100%;min-width:640px;background:var(--panel);font-size:13.5px}
+  th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--accent-soft);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+  tr:last-child td{border-bottom:none}
+  .accounts{color:var(--muted);font-size:12.5px}
+  .pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;line-height:1.6}
+  .p-hot{background:color-mix(in srgb,var(--hot) 16%,transparent);color:var(--hot)}
+  .p-warm{background:color-mix(in srgb,var(--warm) 18%,transparent);color:var(--warm)}
+  .p-cold{background:color-mix(in srgb,var(--cold) 16%,transparent);color:var(--cold)}
+  td.num{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+  .foot{margin-top:36px;font-size:12px;color:var(--muted)}
+  code{background:var(--accent-soft);padding:1px 6px;border-radius:5px;font-size:12.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">Socure · Growth Engineering Exercise</div>
+    <h1>Ideal Customer Profile</h1>
+    <div class="sub">Buyer personas, vertical segmentation, and the operationalized scoring rubric the pipeline runs on. Source: <code>docs/grounding/socure-icp-research-memo.md</code> §2.</div>
+  </header>
+
+  <div class="disclaimer">
+    <strong>Evidence note.</strong> Per-persona KPI targets are category framing, not Socure-published figures. Anchor accounts are drawn from socure.com logos + deep research (see the 43-account list). Vendor-sourced competitive claims are excluded here.
+  </div>
+
+  <h2>Buyer-Persona Matrix</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>CRO</h3><div class="role">Chief Risk Officer</div>
+      <dl>
+        <dt>Owns</dt><dd>Fraud-loss P&amp;L; approve/decline policy</dd>
+        <dt>KPI drivers</dt><dd>Fraud-loss bps · false-positive ratio · synthetic-ID capture · manual-review volume</dd>
+        <dt>Pain Socure targets</dt><dd>Rising synthetic &amp; first-party fraud; good users declined; review teams that don't scale</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h3>CCO</h3><div class="role">Chief Compliance Officer</div>
+      <dl>
+        <dt>Owns</dt><dd>KYC/CIP, AML, sanctions, audit defensibility</dd>
+        <dt>KPI drivers</dt><dd>CIP auto-approval/pass rate · watchlist coverage · SAR quality · exam outcomes</dd>
+        <dt>Pain Socure targets</dt><dd>CIP failures, manual remediation, multi-vendor audit trails, BSA/AML exposure</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h3>VP Product / Growth</h3><div class="role">Conversion owner</div>
+      <dl>
+        <dt>Owns</dt><dd>Onboarding conversion; activation</dd>
+        <dt>KPI drivers</dt><dd>Auto-approval rate · onboarding step-up friction/drop-off · time-to-yes</dd>
+        <dt>Pain Socure targets</dt><dd>Declined-good-applicant = lost LTV; friction kills the funnel</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h3>CTO / Head of Eng</h3><div class="role">Platform owner</div>
+      <dl>
+        <dt>Owns</dt><dd>Integration, uptime, orchestration cost</dd>
+        <dt>KPI drivers</dt><dd>API latency/SLA · single-integration consolidation · config-change velocity</dd>
+        <dt>Pain Socure targets</dt><dd>Stitching point vendors; slow rule changes; brittle in-house logic → the RiskOS pitch</dd>
+      </dl>
+    </div>
+  </div>
+
+  <h2>Vertical Segmentation</h2>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Vertical</th><th>Jobs-to-be-done</th><th>Anchor accounts</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Fintech / Neobanks</strong></td><td>High-volume KYC/CIP, synthetic-ID, auto-approval lift</td><td class="accounts">Chime, SoFi, Robinhood, Dave, Varo, Cash App, Lili</td></tr>
+        <tr><td><strong>Tier-1 Banks</strong></td><td>Digital-account-opening fraud, manual-review reduction</td><td class="accounts">Capital One, Citi, Discover, Green Dot, Nubank, Revolut</td></tr>
+        <tr><td><strong>Investing / Crypto</strong></td><td>Onboarding fraud, age/eligibility</td><td class="accounts">Coinbase, Gemini, Public, Stash, TradeStation, Kalshi, Betterment</td></tr>
+        <tr><td><strong>iGaming / Sports Betting</strong></td><td>Age/identity, geo-eligibility, AML</td><td class="accounts">DraftKings, PrizePicks, Underdog, Fanatics, Caesars</td></tr>
+        <tr><td><strong>Public Sector / FedRAMP</strong></td><td>Benefits fraud, remote identity proofing (IAL2)</td><td class="accounts">CA, NY, TX, FL, OH · Login.gov, FSA</td></tr>
+        <tr><td><strong>E-Commerce / Marketplaces / HR</strong></td><td>Seller/buyer trust, worker onboarding</td><td class="accounts">Uber, LinkedIn, TikTok, Angi, Poshmark, Gusto</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>ICP as a filter — scoring rubric (0&ndash;100)</h2>
+  <p class="sub" style="margin:-4px 0 14px">How the profile above becomes a deterministic score in the pipeline (DESIGN.md §2.4). Symbolic, testable, every score ships its <code>breakdown</code>.</p>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Dimension</th><th>Points</th><th>Logic</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Vertical fit</strong></td><td class="num">0&ndash;35</td><td>FinServ/Fintech/Payments 35 · Gov/Healthcare/Insurance 30 · Retail/eCommerce/Marketplace 20 · other 5</td></tr>
+        <tr><td><strong>Buyer persona</strong></td><td class="num">0&ndash;30</td><td>Fraud/Risk/Identity 30 · Compliance/AML 28 · Underwriting/Claims/Trust&amp;Safety 22 · Product/Growth 18 · IT/Eng 15 · other 5</td></tr>
+        <tr><td><strong>Seniority</strong></td><td class="num">0&ndash;20</td><td>C-level 20 · VP/SVP/Head/Director 15 · Manager 8 · other 3</td></tr>
+        <tr><td><strong>Fit-signal keywords</strong></td><td class="num">0&ndash;15</td><td>fraud/risk/compliance/identity/trust/KYC in title or domain → graduated</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="sub" style="margin:14px 0 0">
+    <span class="pill p-hot">HOT ≥ 75</span>&nbsp;
+    <span class="pill p-warm">WARM 50&ndash;74</span>&nbsp;
+    <span class="pill p-cold">COLD &lt; 50</span>
+  </p>
+
+  <div class="foot">
+    Prepared 2026-07-24 · Bowtie Funnel · Grounding for the Socure lead-enrichment &amp; routing pipeline.
+    Full 43-account directory: <code>docs/grounding/socure-customer-list.md</code>.
+  </div>
+</div>
+</body>
+</html>

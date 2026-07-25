@@ -37,7 +37,7 @@ The LLM stages bolt on; they never sit in the core's path.
 | `lib/ownership.ts` | Ledger: `{domain → rep_id, assigned_at, run_id}` in `memory/account-owners.json` | New assignments persist; re-runs route identically — the ledger is what makes runs idempotent at the routing layer |
 | `connections/*` | Bitscale, nRev, public DNS/RDAP, Anthropic+Langfuse clients | Vendors env-gated + probe-first; every client degrades to null, never throws into the pipeline |
 | `tools/decision-brief.ts` | Compute deltas/trust/projections vs. `memory/runs/`; LLM narrates | Code computes every number; narration optional and env-gated |
-| [`bowtiefunnel/socure-battle-cards`](https://github.com/bowtiefunnel/socure-battle-cards) (separate repo) | LLM card per hot/warm account, per `prompts/battle-card.md` | Own Trigger.dev project; takes `{ accounts }` from this repo's routed output; grounding corpus only; Langfuse groundedness eval; rep gate downstream |
+| [`bowtiefunnel/new-lead-account-battle-cards`](https://github.com/bowtiefunnel/new-lead-account-battle-cards) (separate repo) | LLM card per hot/warm account, per `prompts/battle-card.md` | Own Trigger.dev project; takes `{ accounts }` from this repo's routed output; grounding corpus only; Langfuse groundedness eval; rep gate downstream |
 
 ## 4 · Data model (`lib/types.ts`)
 

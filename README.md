@@ -22,7 +22,7 @@ Payload `{}` runs enrichment → scoring → routing → decision brief. Verifie
 30/30 routed, 0 unrouted, tiers 8 hot / 19 warm / 3 cold — identical to the local run.
 
 Battle cards are **Phase 2** and live in their own repo:
-[`bowtiefunnel/socure-battle-cards`](https://github.com/bowtiefunnel/socure-battle-cards) —
+[`bowtiefunnel/new-lead-account-battle-cards`](https://github.com/bowtiefunnel/new-lead-account-battle-cards) —
 a separate Trigger.dev project (own deploy, own history), not a task in this one.
 Its `battle-cards-workflow` task takes `{ accounts: Account[] }` — pass the `accounts`
 array from this repo's `output/routed_leads.json` (Trigger.dev cloud runs each get an

@@ -8,19 +8,19 @@ import { enrichLead, assertEnrichmentContract } from "../lib/enrich.js";
 import { scoreLead } from "../lib/scoring.js";
 import { groupAccounts, routeAccount } from "../lib/routing.js";
 import { loadOwners, saveOwners } from "../lib/ownership.js";
-import { battleCard } from "./battle-card.js";
 import { decisionBrief } from "./decision-brief.js";
 import type { Account, Lead } from "../lib/types.js";
 
 /**
  * Orchestrator: ingest → Gate 0 suppress → enrich → score → route (account-first) →
- * battle cards (hot/warm, subtask = per-card retry) → decision brief.
+ * decision brief. Battle cards are a separate, standalone workflow
+ * (battle-cards-workflow.ts) — Phase 2, triggered independently of this run.
  * Idempotent: outputs are deterministic filenames — a re-run overwrites, never duplicates.
  */
 export const part1Assignment = task({
   id: "part-1-assignment",
   maxDuration: 600,
-  run: async (payload: { battleCards?: boolean }, { ctx }) => {
+  run: async (_payload: {}, { ctx }) => {
     // 1 · ingest
     const leads: Lead[] = parseCsv(leadsCsv()).map((r) => ({
       id: Number(r.id), name: r.name, email: r.email, domain: r.domain, title: r.title,
@@ -52,30 +52,14 @@ export const part1Assignment = task({
     }
     saveOwners(owners);
 
-    // 6 · battle cards — hot/warm only, human-gated downstream. OPT-IN via payload
-    // { battleCards: true } so test runs never spend LLM tokens by accident (Phase 2 capability).
+    // 6 · decision brief (4Ws) — reads/writes memory/runs baseline
     const outDir = join(process.cwd(), "output");
-    mkdirSync(join(outDir, "battle_cards"), { recursive: true });
-    let cardCount = 0;
-    if (payload.battleCards) {
-      const cardTargets = accounts.filter((a) => a.tier !== "cold");
-      const cards = await battleCard.batchTriggerAndWait(cardTargets.map((a) => ({ payload: { account: a } })));
-      for (const r of cards.runs) {
-        if (r.ok && !r.output.skipped) {
-          writeFileSync(join(outDir, "battle_cards", `${r.output.domain}.md`), r.output.card!);
-          const acct = accounts.find((a) => a.domain === r.output.domain);
-          acct?.leads.forEach((l) => (l.battle_card_path = `battle_cards/${r.output.domain}.md`));
-          cardCount++;
-        }
-      }
-    }
-
-    // 7 · decision brief (4Ws) — reads/writes memory/runs baseline
+    mkdirSync(outDir, { recursive: true });
     const brief = await decisionBrief.triggerAndWait({
       runId: ctx.run.id, accounts, suppressedCount: expansion.length,
     });
 
-    // 8 · outputs
+    // 7 · outputs
     const rows = acquisition.map((l) => ({
       id: l.id, name: l.name, email: l.email, domain: l.domain, title: l.title,
       industry: l.enrichment?.industry, enrichment_source: l.enrichment?.source,
@@ -110,7 +94,6 @@ export const part1Assignment = task({
       rep_load: count((l) => l.routing?.rep_id ?? "unrouted"),
       hot_leads: acquisition.filter((l) => l.score?.tier === "hot").map((l) => `${l.name} (${l.score!.total})`),
       dq: acquisition.filter((l) => l.score?.dq_reason).map((l) => l.domain),
-      battle_cards: cardCount,
     };
   },
 });

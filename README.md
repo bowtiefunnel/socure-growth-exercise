@@ -18,9 +18,14 @@ npm run check      # offline invariant tests (scoring, routing, suppression, own
 ```
 
 Cloud: deployed to **Trigger.dev** as task **`part-1-assignment`** (`npm run deploy`).
-Payload `{}` runs enrichment → scoring → routing → decision brief; battle cards are
-**opt-in** via `{"battleCards": true}` (Phase 2 capability, excluded from Part 1 runs).
-Verified prod run: 30/30 routed, 0 unrouted, tiers 8 hot / 19 warm / 3 cold —
+Payload `{}` runs enrichment → scoring → routing → decision brief. Battle cards are
+a **separate, standalone task** — `battle-cards-workflow` — triggered independently
+of the Part 1 run (Phase 2 capability). It takes `{ accounts: Account[] }` as a
+required payload rather than reading the routed book off disk: Trigger.dev cloud
+runs each get an isolated, ephemeral filesystem, so a separate run can never see
+what `part-1-assignment` wrote in its own run — pass the `accounts` array from
+that run's `output/routed_leads.json` explicitly. Verified prod run
+(`part-1-assignment`): 30/30 routed, 0 unrouted, tiers 8 hot / 19 warm / 3 cold —
 identical to the local run.
 
 Per the brief's three bullets:

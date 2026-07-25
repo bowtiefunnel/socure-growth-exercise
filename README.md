@@ -18,15 +18,15 @@ npm run check      # offline invariant tests (scoring, routing, suppression, own
 ```
 
 Cloud: deployed to **Trigger.dev** as task **`part-1-assignment`** (`npm run deploy`).
-Payload `{}` runs enrichment → scoring → routing → decision brief. Battle cards are
-a **separate, standalone task** — `battle-cards-workflow` — triggered independently
-of the Part 1 run (Phase 2 capability). It takes `{ accounts: Account[] }` as a
-required payload rather than reading the routed book off disk: Trigger.dev cloud
-runs each get an isolated, ephemeral filesystem, so a separate run can never see
-what `part-1-assignment` wrote in its own run — pass the `accounts` array from
-that run's `output/routed_leads.json` explicitly. Verified prod run
-(`part-1-assignment`): 30/30 routed, 0 unrouted, tiers 8 hot / 19 warm / 3 cold —
-identical to the local run.
+Payload `{}` runs enrichment → scoring → routing → decision brief. Verified prod run:
+30/30 routed, 0 unrouted, tiers 8 hot / 19 warm / 3 cold — identical to the local run.
+
+Battle cards are **Phase 2** and live in their own repo:
+[`bowtiefunnel/socure-battle-cards`](https://github.com/bowtiefunnel/socure-battle-cards) —
+a separate Trigger.dev project (own deploy, own history), not a task in this one.
+Its `battle-cards-workflow` task takes `{ accounts: Account[] }` — pass the `accounts`
+array from this repo's `output/routed_leads.json` (Trigger.dev cloud runs each get an
+isolated, ephemeral filesystem, so it can't read this repo's output off disk).
 
 Per the brief's three bullets:
 

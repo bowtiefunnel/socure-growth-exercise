@@ -14,7 +14,7 @@ eval'd for groundedness — a card citing anything outside `docs/grounding/` fai
 3. **Persona pain** — from the buyer-persona matrix (`docs/icp-profile.html` / memo §2).
    Match on the lead's scored persona bucket. Lead with latent pain: the false-positive /
    declined-good-applicant wedge where persona-appropriate.
-4. **Socure angle + product** — map need → product: onboarding/KYC → KYC/CIP + Sigma ·
+4. **TargetCo angle + product** — map need → product: onboarding/KYC → KYC/CIP + Sigma ·
    fraud ops → Sigma Identity/Synthetic/Device · orchestration sprawl → RiskOS ·
    model teams → Signals (250+ features).
 5. **Proof point** — pick by vertical proximity, closest first:
@@ -24,7 +24,7 @@ eval'd for groundedness — a card citing anything outside `docs/grounding/` fai
    - Public sector → **State of CA 94% instant verification**
    - Insurance/healthcare/other → nearest of the above + state it's cross-vertical evidence
 6. **Competitive wedge** — one likely incumbent for the vertical (Persona/Jumio/Alloy/bureaus)
-   and Socure's counter-position, **always attributed** ("Socure positions…") — never stated
+   and TargetCo's counter-position, **always attributed** ("TargetCo positions…") — never stated
    as independent fact. Passive-first vs doc-capture; owned graph + orchestration vs
    assemble-it-yourself; real-time ML vs batch bureau data.
 7. **Suggested opener** — one sentence, persona-specific, referencing their likely KPI

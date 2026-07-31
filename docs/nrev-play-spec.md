@@ -1,4 +1,4 @@
-# nRev Play Spec — Socure Lead Pipeline (Lite Mirror)
+# nRev Play Spec — TargetCo Lead Pipeline (Lite Mirror)
 
 Node-by-node spec to rebuild the pipeline as a no-code nRev Play — the same logic
 a RevOps owner could iterate without engineering. Source of truth stays
@@ -6,7 +6,7 @@ a RevOps owner could iterate without engineering. Source of truth stays
 so the Play can be built straight from this page. Test in nRev's zero-credit test
 mode against the 30 leads before flipping to Production.
 
-## Play: "Socure — Enrich, Score & Route Inbound"
+## Play: "TargetCo — Enrich, Score & Route Inbound"
 
 | # | Node | Type | Config |
 |---|---|---|---|

@@ -1,22 +1,22 @@
-# SOCURE, INC. — Identity & Fraud Intelligence
+# TARGETCO, INC. — Identity & Fraud Intelligence
 ### Institutional Research Memo · Prepared 2026-07-24
 
-> **Evidence-grade disclaimer (read first).** Nearly all platform-scale, customer, and outcome metrics below trace to Socure's **own press releases, product pages, and marketing case studies** — self-reported, unaudited, and appropriately labeled "company-reported." Financials ($340M ARR, 134% NDR, 62% growth) come from a **promotional Q1-2026 earnings release**, not audited statements; **ARR ≠ GAAP revenue.** Seven specific claims that surfaced in research were **refuted under 3-vote adversarial verification** and are excluded or flagged (latency SLAs, a "90% acceptance" case figure, a "$200M revenue/$18.5M profit" figure, a mis-stated Series E structure). **Section 5 competitive differentiation is Socure's own framing — no head-to-head comparison claim survived independent verification.** Treat accordingly.
+> **Evidence-grade disclaimer (read first).** Nearly all platform-scale, customer, and outcome metrics below trace to TargetCo's **own press releases, product pages, and marketing case studies** — self-reported, unaudited, and appropriately labeled "company-reported." Financials ($340M ARR, 134% NDR, 62% growth) come from a **promotional Q1-2026 earnings release**, not audited statements; **ARR ≠ GAAP revenue.** Seven specific claims that surfaced in research were **refuted under 3-vote adversarial verification** and are excluded or flagged (latency SLAs, a "90% acceptance" case figure, a "$200M revenue/$18.5M profit" figure, a mis-stated Series E structure). **Section 5 competitive differentiation is TargetCo's own framing — no head-to-head comparison claim survived independent verification.** Treat accordingly.
 
-*Research method: deep-research workflow — 105 agents, 23 sources fetched, 85 claims extracted, 25 adversarially verified (18 confirmed, 7 refuted). Customer logo list supplemented via live socure.com fetch.*
+*Research method: deep-research workflow — 105 agents, 23 sources fetched, 85 claims extracted, 25 adversarially verified (18 confirmed, 7 refuted). Customer logo list supplemented via live targetco.example fetch.*
 
 ---
 
 ## 1 · Market Positioning & Core Platform Architecture
 
-Socure is an **AI-native identity verification and fraud-decisioning platform**. It has repositioned from a point-solution KYC vendor into a **decisioning-layer / orchestration** play, anchored by two 2025 launches that define its current architecture.
+TargetCo is an **AI-native identity verification and fraud-decisioning platform**. It has repositioned from a point-solution KYC vendor into a **decisioning-layer / orchestration** play, anchored by two 2025 launches that define its current architecture.
 
 **Core platform stack**
 
 | Layer | Product | Function |
 |---|---|---|
 | Orchestration | **RiskOS** (launched **Feb 2025**) | "Decision engine and orchestration platform with identity at the core," spanning **onboarding → login → transactions**. Launched with **50+ pre-integrated third-party data solutions**; performs "tens of thousands of real-time computations per second"; rule/workflow changes ship "in minutes vs. weeks or months." *(3-0 verified)* |
-| Data/ML access | **Socure Signals** (launched **Sept 30, 2025**) | API exposure of the **feature store** powering Socure's ML models — **250+ features** at launch across three categories: **Input-Derived, Model-Derived, Graph-Derived**. Concrete evidence of the model-feedback-loop architecture. *(3-0 verified)* |
+| Data/ML access | **TargetCo Signals** (launched **Sept 30, 2025**) | API exposure of the **feature store** powering TargetCo's ML models — **250+ features** at launch across three categories: **Input-Derived, Model-Derived, Graph-Derived**. Concrete evidence of the model-feedback-loop architecture. *(3-0 verified)* |
 | Risk scoring | **Sigma** suite (Identity Fraud, Synthetic Fraud, Device), **Predictive PII RiskScores** (Email / Phone / Address) | Passive PII risk scoring — verify against network signal without forcing document capture. |
 | Doc/biometric | **Predictive DocV with Liveness** | Document + liveness step-up when passive signal is insufficient. |
 | Compliance | **KYC/CIP (with eCBSV), Global Watchlist Screening w/ Monitoring, Alert List** | AML/sanctions/PEP screening and CIP. |
@@ -33,14 +33,14 @@ Socure is an **AI-native identity verification and fraud-decisioning platform**.
 
 ## 2 · ICP & Buyer-Persona Matrix
 
-| Persona | Owns | Critical KPI drivers | Pain Socure targets |
+| Persona | Owns | Critical KPI drivers | Pain TargetCo targets |
 |---|---|---|---|
 | **Chief Risk Officer (CRO)** | Fraud loss P&L; approve/decline policy | Fraud-loss bps; **false-positive ratio**; synthetic-ID capture; manual-review volume | Rising synthetic & first-party fraud; good users declined; review teams that don't scale |
 | **Chief Compliance Officer (CCO)** | KYC/CIP, AML, sanctions, audit defensibility | **CIP auto-approval/pass rate**; watchlist coverage; SAR quality; exam outcomes | CIP failures, manual remediation, multi-vendor audit trails, BSA/AML exposure |
 | **VP Product / Growth** | Onboarding conversion; activation | **Auto-approval rate**; onboarding **step-up friction/drop-off**; time-to-yes | Declined-good-applicant = lost LTV; friction kills funnel |
 | **CTO / Head of Engineering** | Integration, uptime, orchestration cost | **API latency/SLA**; single-integration consolidation; config-change velocity | Stitching point vendors; slow rule changes; brittle in-house logic → the RiskOS pitch |
 
-*(Per-persona KPI targets above are category framing, not Socure-published figures.)*
+*(Per-persona KPI targets above are category framing, not TargetCo-published figures.)*
 
 **Vertical segmentation:**
 
@@ -87,15 +87,15 @@ See `socure-customer-list.md` for the full 43-account table. Verified outcomes:
 
 ⚠️ "Profitable growth" is a marketing phrase, not audited profitability. **"$200M FY2025 revenue / $18.5M profit" refuted (0-3)** — do not conflate ARR with GAAP revenue. **"$200M at $16.07/share" Series E framing refuted (0-3)** — the round was $450M. The **$490M+ secondary-market volume** in the brief was **not independently confirmed**.
 
-**IPO read:** The 2025–26 productization sprint (RiskOS → Signals → SocureGov → FedRAMP) plus a "profitable growth" narrative and 134% NDR is the standard pre-S-1 grooming pattern. But peak valuation dates to Nov 2021, last primary round Mar 2023, and there's no audited-revenue disclosure — likely a valuation-reset overhang vs. the 2021 peak. **Verdict: positioned/grooming for a listing, no concrete S-1 timeline evidenced; strategic-M&A path remains live. Do not represent an IPO as imminent or confirmed.**
+**IPO read:** The 2025–26 productization sprint (RiskOS → Signals → TargetCoGov → FedRAMP) plus a "profitable growth" narrative and 134% NDR is the standard pre-S-1 grooming pattern. But peak valuation dates to Nov 2021, last primary round Mar 2023, and there's no audited-revenue disclosure — likely a valuation-reset overhang vs. the 2021 peak. **Verdict: positioned/grooming for a listing, no concrete S-1 timeline evidenced; strategic-M&A path remains live. Do not represent an IPO as imminent or confirmed.**
 
 ---
 
 ## 5 · Competitive Landscape & Counter-Positioning
 
-⚠️ **Every point below is Socure's own positioning (or analyst summary). No head-to-head comparison claim survived independent verification — vendor narrative, not fact.**
+⚠️ **Every point below is TargetCo's own positioning (or analyst summary). No head-to-head comparison claim survived independent verification — vendor narrative, not fact.**
 
-| Competitor | Their model | Socure's claimed counter-position |
+| Competitor | Their model | TargetCo's claimed counter-position |
 |---|---|---|
 | **Persona** | Configurable workflow builder; document-capture-forward | Pre-built identity graph + models vs. assemble-it-yourself |
 | **Jumio** | Active document capture + biometrics | Passive PII verification first — less onboarding friction |
@@ -115,4 +115,4 @@ See `socure-customer-list.md` for the full 43-account table. Verified outcomes:
 
 ---
 
-**Primary sources:** Socure RiskOS launch (PRNewswire, Feb 2025) · Socure Signals launch (BusinessWire, 20250930784133) · Socure Q1-2026 results (BusinessWire, 2026-04-27) · Socure case studies: Lili, Betterment, US-challenger-bank · Socure public-sector page + FedRAMP Moderate release · Forge Global · Sacra · Proof.com case study · socure.com homepage & customers page (fetched 2026-07-24).
+**Primary sources:** TargetCo RiskOS launch (PRNewswire, Feb 2025) · TargetCo Signals launch (BusinessWire, 20250930784133) · TargetCo Q1-2026 results (BusinessWire, 2026-04-27) · TargetCo case studies: Lili, Betterment, US-challenger-bank · TargetCo public-sector page + FedRAMP Moderate release · Forge Global · Sacra · Proof.com case study · targetco.example homepage & customers page (fetched 2026-07-24).

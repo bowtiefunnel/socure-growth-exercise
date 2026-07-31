@@ -1,9 +1,9 @@
-# Skill: Socure Messaging — Expansion (Upsell)
+# Skill: TargetCo Messaging — Expansion (Upsell)
 
 Voice standard for EXISTING-customer motions — the right side of the bowtie.
 Inherits everything from `prompts/messaging-net-new.md` (evidence tiers, banned
 lexicon, voice pillars, math rule) — this file only defines what CHANGES when the
-audience already runs Socure. Grounding: DESIGN.md §3 (Part 2 mechanics) +
+audience already runs TargetCo. Grounding: DESIGN.md §3 (Part 2 mechanics) +
 verified memo.
 
 ## The fundamental shift
@@ -13,7 +13,7 @@ verified memo.
 | Audience | stranger who must be convinced | customer who already trusts the platform |
 | Best evidence | case-study proof points | **their own usage data** — readiness signals observed in-account |
 | Carrier | AE/SDR (cold) | CSM/AM (warm), growth engineer owns the signal |
-| Competitive wedge | lead with counter-positioning | none — they already chose Socure; competitors appear only as displacement-defense at renewal |
+| Competitive wedge | lead with counter-positioning | none — they already chose TargetCo; competitors appear only as displacement-defense at renewal |
 | Arc | pain → mechanism → verified metric | **observed signal → what it means → mechanism → multi-product proof → low-friction next step** |
 
 ## Scope: upsell (deepen what they own)

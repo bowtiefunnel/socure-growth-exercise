@@ -1,4 +1,4 @@
-# System Design Document — Socure Lead Pipeline
+# System Design Document — TargetCo Lead Pipeline
 
 Companion to `ARCHITECTURE.md` (the one-pager). This is the understanding doc:
 what each component does, the contracts between them, and the decisions behind them.
@@ -95,7 +95,7 @@ cadence live in `OPERATIONS.md`.
 
 ## 9 · Alternatives considered
 
-- **Lead-based routing** — rejected: Socure's buyer is a committee; account-first
+- **Lead-based routing** — rejected: TargetCo's buyer is a committee; account-first
   matches lead-to-account reality and prevents split ownership.
 - **LLM-judged scoring** — rejected: scores feed tracked metrics; an LLM judge
   drifts week-over-week and makes deltas meaningless (Gate 3 hard rule).

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Socure Pipeline — System Design Document</title>
+<title>TargetCo Pipeline — System Design Document</title>
 <style>
   :root { --ink:#1a1d23; --muted:#5b6472; --line:#d9dde4; --bg:#ffffff; --panel:#f5f7fa;
           --sym:#0b6e4f; --neu:#8a4d0f; --hum:#7c3aed; }
@@ -36,7 +36,7 @@
 </head>
 <body>
 
-<h1>System Design Document — Socure Lead Pipeline</h1>
+<h1>System Design Document — TargetCo Lead Pipeline</h1>
 <p class="lede">Companion to the architecture one-pager. This is the understanding doc:
 what each component does, the contracts between them, and the decisions behind them.</p>
 
@@ -126,7 +126,7 @@ snapshots power the decision brief's deltas. Alert thresholds and cadence live i
 
 <h2>9 · Alternatives considered</h2>
 <ul>
-  <li><strong>Lead-based routing</strong> — rejected: Socure's buyer is a committee; account-first matches
+  <li><strong>Lead-based routing</strong> — rejected: TargetCo's buyer is a committee; account-first matches
       lead-to-account reality and prevents split ownership.</li>
   <li><strong>LLM-judged scoring</strong> — rejected: scores feed tracked metrics; an LLM judge drifts
       week-over-week and makes deltas meaningless.</li>
@@ -136,6 +136,6 @@ snapshots power the decision brief's deltas. Alert thresholds and cadence live i
       observability; that granularity is why Trigger.dev was picked at all.</li>
 </ul>
 
-<footer>Socure Growth Engineering Exercise · source of truth: <code>docs/SYSTEM-DESIGN.md</code></footer>
+<footer>TargetCo Growth Engineering Exercise · source of truth: <code>docs/SYSTEM-DESIGN.md</code></footer>
 </body>
 </html>

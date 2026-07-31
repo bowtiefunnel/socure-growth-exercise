@@ -34,7 +34,7 @@ battle card — a card citing an unverified number fails before a rep sees it.
 | Weekly | Sync `data/socure-customer-list.csv` from CRM — suppression is only as good as this list | New closed-won logo |
 | Monthly | Vendor coverage check: Bitscale/nRev hit-rate vs. the DNS/RDAP + symbolic floor | Enrichment trust score trending down |
 | Monthly | Reconcile ownership ledger vs. CRM account owners | Rep change, territory change |
-| Quarterly | Refresh grounding corpus: new Socure case studies enter the allowlist **only after adversarial verification**; retired claims join the blocklist | New press release cited in a card draft |
+| Quarterly | Refresh grounding corpus: new TargetCo case studies enter the allowlist **only after adversarial verification**; retired claims join the blocklist | New press release cited in a card draft |
 | Quarterly | Rubric recalibration: re-run the reverse-ICP on the current customer base; retune weights from the rep accept/decline ledger | Hot-tier reply rate ≤ warm-tier |
 | As released | Pin bumps: Trigger.dev SDK, Anthropic model version (Haiku deprecations), Langfuse | Deprecation notices |
 

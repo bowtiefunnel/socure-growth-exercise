@@ -1,4 +1,4 @@
-# Socure Growth Engineering Exercise — Design Spec
+# TargetCo Growth Engineering Exercise — Design Spec
 
 **Author:** Jomar Ebalida · **Date:** 2026-07-24
 **Deliverable:** Technical exercise (Part 1 build + Part 2 written case)
@@ -17,7 +17,7 @@ The Part 2 mechanic is the Part 1 engine re-pointed (ICP-fit → expansion-readi
 On top of both books sits a **Decision Intelligence layer** (Workflow 5) that answers the four decision questions — what happened & why (variance attribution + root cause), current state (trustworthy nowcast + confidence ledger), what's likely next (forward projection under alternative assumptions), what to do (decision-ready options + recommendation). This is the instrumentation plan leveled up from descriptive to prescriptive, and it runs over both the acquisition book and the expansion book.
 
 **Grounding assets already in hand:**
-- Socure ICP research (`_agency-ops/business/clients/socure/`) → the scoring rubric + battle-card knowledge base (competitive counter-positioning, case-study proof points, persona pains).
+- TargetCo ICP research (`_agency-ops/business/clients/targetco/`) → the scoring rubric + battle-card knowledge base (competitive counter-positioning, case-study proof points, persona pains).
 - Bitscale playbooks (`.firecrawl/bitscale-playbooks.md`) → "Salesforce ICP Account" ≈ Part 1, "Active Customers SPOC" ≈ Part 2.
 - labs.bowtiefunnel.com `agent-models` → house signal taxonomy (Signal/Intent, Expansion Signal, Churn Signal agents) that Part 2 cites as already-built.
 
@@ -32,7 +32,7 @@ On top of both books sits a **Decision Intelligence layer** (Workflow 5) that an
 | Classify / score / route | **Symbolic rules** | Deterministic, transparent, testable, 100% reproducible for the demo. Every score ships its `breakdown`. |
 | LLM (residue + battle card) | **Cheap model via llm-switchboard cost-routing** | Only the ambiguous residue and the generative battle card hit an LLM. labs cost-optimization best practice ("cheap work to cheap models"). |
 | LLM observability | **Langfuse** | Traces prompt/version, tokens, **cost**, latency, and **evals** on output quality. Second instrumentation layer complementing Trigger.dev. |
-| Knowledge base | Socure client research | Grounds the battle card (proof points + competitive wedge). |
+| Knowledge base | TargetCo client research | Grounds the battle card (proof points + competitive wedge). |
 | Secrets | `.env` + Trigger.dev env vars | `BITSCALE_API_KEY`, `LANGFUSE_PUBLIC_KEY/SECRET_KEY/HOST`. Never committed; `.env` gitignored. |
 
 **labs best-practices applied:** architecture-first (this doc + diagram), anti-over-engineering (symbolic core, LLM only where it earns its place), tool selection grounded in real usage, cost-routing visible in Langfuse.
@@ -49,7 +49,7 @@ leads.csv
    ▼ (Trigger.dev orchestrator: runLeadPipeline, fan-out per lead)
 [1 ENRICH] ─► [2 SCORE] ─► [3 ROUTE] ─► [4 BATTLE CARD] ─► [5 DECISION BRIEF]
  Bitscale +    symbolic     vertical→rep   LLM, grounded in    symbolic compute
- symbolic +    ICP rubric   score→priority Socure research     + confidence ledger
+ symbolic +    ICP rubric   score→priority TargetCo research     + confidence ledger
  LLM residue   0–100+tier                  (hot/warm only)     → LLM narration
      │                                          │                    │
      └────── Langfuse traces LLM touchpoints ───┴────────────────────┘
@@ -92,7 +92,7 @@ One `Lead` object accretes fields (source never mutated):
 
 ### 2.4 Workflow 2 — Scoring (symbolic ICP rubric, 0–100)
 
-Grounded in the Socure ICP research. **Runnable rubric on the 30-lead dataset:**
+Grounded in the TargetCo ICP research. **Runnable rubric on the 30-lead dataset:**
 
 | Dimension | Points | Logic |
 |---|---|---|
@@ -107,11 +107,11 @@ Grounded in the Socure ICP research. **Runnable rubric on the 30-lead dataset:**
 
 ### 2.5 Workflow 3 — Routing (symbolic; account-first, vertical → rep, score → priority)
 
-**Account-based, not lead-based** — Socure's buyer is a committee (CRO/CCO/VP Product/CTO),
+**Account-based, not lead-based** — TargetCo's buyer is a committee (CRO/CCO/VP Product/CTO),
 so leads group to accounts by registrable domain BEFORE routing; the account routes and
 every lead at it inherits rep + priority. `account.score = MAX(lead scores)` (committee-best —
 sum rewards spam, avg lets an IT manager dilute a CRO); multi-lead accounts get committee-depth
-flagged as a tiebreaker, never score inflation. Mirrors Socure's real motion: vertical pods +
+flagged as a tiebreaker, never score inflation. Mirrors TargetCo's real motion: vertical pods +
 named-account enterprise + lead-to-account matching. Gate 0 suppression is the same
 account-resolution step run against *owned* accounts (→ expansion book).
 In this 30-lead CSV every domain is unique (1 lead = 1 account), so output still satisfies the
@@ -127,8 +127,8 @@ Fallback: unmatched vertical → Rep C with flagged reason
 
 ### 2.6 Workflow 4 — Battle card (LLM, grounded; hot/warm only)
 
-Structure (grounded in `_agency-ops/business/clients/socure/`):
-> Account snapshot → Why-now signal → Persona pain (ICP research) → Socure angle + product (Sigma/RiskOS/KYC) → **Proof point** (case study matched to lead's vertical — fintech → Lili/Betterment) → **Competitive wedge** (vs Persona/Jumio/Alloy/bureaus; Bitscale "Competitors Prospecting" pattern) → suggested opener line.
+Structure (grounded in `_agency-ops/business/clients/targetco/`):
+> Account snapshot → Why-now signal → Persona pain (ICP research) → TargetCo angle + product (Sigma/RiskOS/KYC) → **Proof point** (case study matched to lead's vertical — fintech → Lili/Betterment) → **Competitive wedge** (vs Persona/Jumio/Alloy/bureaus; Bitscale "Competitors Prospecting" pattern) → suggested opener line.
 
 Langfuse traces the generation + runs an eval (groundedness/quality).
 
@@ -182,7 +182,7 @@ Output: `decision_brief.md` + `brief.json`. Same layer runs over the Part 2 expa
 3. **`PART2.md`** — half-page written case + agent citations.
 4. Optional Loom; 20-min working session covers the rest.
 
-**Repo location:** own top-level `socure-growth-exercise/` (clean public GitHub link), separate from the agency OS but *reads* `_agency-ops/business/clients/socure/` for battle-card grounding at build time (grounding text is copied into the repo so it's self-contained for reviewers).
+**Repo location:** own top-level `lead-enrich-score-route/` (clean public GitHub link), separate from the agency OS but *reads* `_agency-ops/business/clients/targetco/` for battle-card grounding at build time (grounding text is copied into the repo so it's self-contained for reviewers).
 
 ---
 
@@ -208,4 +208,4 @@ Battle card, Langfuse, and the decision brief are above-and-beyond; if time comp
 - **"Firmographic/technographic" on mock data** — where Bitscale misses, fields come from symbolic + LLM residue; `source`/`confidence` keeps it honest.
 - **Google Sheet output** — dead token; CSV/JSON + Trigger.dev run are the reliable artifacts.
 - **Secrets** — `.env` gitignored; keys set as Trigger.dev env vars before deploy.
-- **Workspace is not a git repo** — `git init` happens inside `socure-growth-exercise/` for the submission.
+- **Workspace is not a git repo** — `git init` happens inside `lead-enrich-score-route/` for the submission.

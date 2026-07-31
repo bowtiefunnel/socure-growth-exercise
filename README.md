@@ -1,4 +1,4 @@
-# Socure Growth Engineering Exercise
+# TargetCo Growth Engineering Exercise
 
 30 mock leads → suppress → enrich → score → route → enable. Deterministic core,
 LLM only where language is the deliverable. The repo is organized by the
@@ -37,7 +37,7 @@ Per the brief's three bullets:
   `source` + `confidence` — a fallback is never dressed as vendor data.
 - **Scores** each lead against a defined ICP — symbolic rubric
   ([`config/icp-rubric.json`](config/icp-rubric.json)), 0–100 across 4 dimensions,
-  derived from a 43-account reverse-ICP of Socure's real customer base
+  derived from a 43-account reverse-ICP of TargetCo's real customer base
   ([`docs/grounding/`](docs/grounding/)). Every score ships its `breakdown`;
   every DQ ships its `dq_reason`.
 - **Routes** each lead to one of three mock reps by written rules
@@ -62,9 +62,9 @@ layers (0.9/0.85) push these toward full coverage.
 
 ### Deliverable 2 · One-page architecture note
 
-**→ [`docs/Socure.ARCHITECTURE.md`](docs/Socure.ARCHITECTURE.md)** — tools/APIs,
+**→ [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)** — tools/APIs,
 hosting, data model, and why, with the step-by-step SYMBOLIC/NEURAL/HUMAN table.
-Rendered: [`docs/socure.architecture.html`](docs/socure.architecture.html) ·
+Rendered: [`docs/architecture.html`](docs/architecture.html) ·
 visual topography: [`docs/topography.html`](docs/topography.html).
 
 The one-paragraph version: **Trigger.dev** hosts the pipeline (per-stage retries,

@@ -1,7 +1,7 @@
-# Socure — Battle-Tested ICP Blueprint
+# TargetCo — Battle-Tested ICP Blueprint
 
 **Prepared:** 2026-07-24 · **Role:** Principal RevOps Architect / B2B GTM
-**Grounding:** `docs/grounding/socure-icp-research-memo.md` (105-agent deep research, adversarially verified) · `data/socure-customer-list.csv` (43 accounts) · `data/leads.csv` (30-lead exercise set)
+**Grounding:** `docs/grounding/icp-research-memo.md` (105-agent deep research, adversarially verified) · `data/socure-customer-list.csv` (43 accounts) · `data/leads.csv` (30-lead exercise set)
 **Evidence discipline:** figures from research are cited as-is; bands/thresholds the research does not contain are marked `[assumed]` — operator-calibratable, not vendor fact.
 
 ---

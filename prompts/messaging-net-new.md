@@ -1,10 +1,10 @@
-# Skill: Socure Messaging & Voice
+# Skill: TargetCo Messaging & Voice
 
 Voice and lexicon standard for anything prospect-facing the pipeline generates —
 battle-card angles, opener lines, outreach copy. Layers ON TOP of
 `prompts/battle-card.md` (structure) and `instructions.md` (evidence discipline).
 Refined 2026-07-24 from messaging research, reconciled against the adversarially
-verified memo (`docs/grounding/socure-icp-research-memo.md`).
+verified memo (`docs/grounding/icp-research-memo.md`).
 
 ## Evidence tiers — which numbers may be used
 
@@ -25,7 +25,7 @@ never "reduced by 300%." Percentages of reduction cannot exceed 100.
 4. **Account Intelligence** — bank-account status/ownership validation
 5. **Device & Behavior** — Digital Intelligence, behavioral signals
 
-Orchestration above all five: **RiskOS**. Feature-store access: **Socure Signals**.
+Orchestration above all five: **RiskOS**. Feature-store access: **TargetCo Signals**.
 
 ## Voice pillars
 
@@ -48,10 +48,10 @@ Orchestration above all five: **RiskOS**. Feature-store access: **Socure Signals
 ## Competitive positioning — attribution is mandatory
 
 No head-to-head claim survived independent verification. Every competitive line
-must be framed as Socure's positioning ("Socure positions…", "vs. the
+must be framed as TargetCo's positioning ("TargetCo positions…", "vs. the
 assemble-it-yourself model"), never as market fact.
 
-| vs. | Socure's claimed counter-position |
+| vs. | TargetCo's claimed counter-position |
 |---|---|
 | Persona (workflow builder) | pre-built identity graph + models vs. assemble-it-yourself |
 | Jumio (doc-capture-first) | passive PII verification first — less onboarding friction |
@@ -84,7 +84,7 @@ the reader knows the acronym; never stop the prose for a glossary.
 | Long-form | plain markdown headers (no bold inside headers) · bold only metrics, certs, product names · tables break up prose |
 
 **Pronoun rule (prospect-facing copy only):** avoid "we/our" hype framing; prefer
-"the platform," "Socure," or the mechanism as subject. Internal card notes for
+"the platform," "TargetCo," or the mechanism as subject. Internal card notes for
 reps may address the rep directly.
 
 **The arc every copy block follows:**

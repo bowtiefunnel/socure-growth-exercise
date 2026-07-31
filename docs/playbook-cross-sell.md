@@ -47,7 +47,7 @@ packet with the evidence attached. No signal → no play. Ever.
 > bring the analysis.
 
 **Touch 2 — Intro email to the Product-B persona** (after champion intro; this
-persona has never talked to Socure — full cross-sell arc):
+persona has never talked to TargetCo — full cross-sell arc):
 
 > Subject: {{signal_metric}} chargeback trend on verified {{account}} accounts
 >

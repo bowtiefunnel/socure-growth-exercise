@@ -1,4 +1,4 @@
-# Skill: Socure Messaging — Cross-Sell (New Products into Owned Accounts)
+# Skill: TargetCo Messaging — Cross-Sell (New Products into Owned Accounts)
 
 Voice standard for introducing a pillar the account does NOT yet own.
 Inherits evidence tiers/lexicon/pillars from `prompts/messaging-net-new.md` and
@@ -19,7 +19,7 @@ trusted; the specific product — and often the specific buyer — has no histor
 | Trust | full — they use the thing daily | account-level only; product credibility starts near zero |
 | Evidence mix | their usage data | **hybrid: their data proves the GAP · case studies prove the PRODUCT** |
 
-Never presume relationship tone with a persona who has never talked to Socure —
+Never presume relationship tone with a persona who has never talked to TargetCo —
 to them the message is first contact, arriving with a warm intro.
 
 ## Product-bridge plays (pillar taxonomy → who owns the budget)
@@ -54,7 +54,7 @@ through the champion.
 - The champion's credibility is borrowed capital — an oversold Product B burns
   the Product-A relationship. Claims stay inside the verified tier, always.
 - Address the new persona's KPI, not the platform relationship ("you already
-  love Socure" is champion logic, not buyer logic).
+  love TargetCo" is champion logic, not buyer logic).
 - One bridge per play. Stacking three products in one message reads as a
   price-sheet, not a solution.
 - Guardrail inherits: Product-A health check passes before any cross-sell fires.

@@ -13,7 +13,7 @@ Perplexity/Jina nodes this replaces), then return a compact evidence-cited diges
 
 1. **Why-now / trigger events** — recent funding, launches, expansion, breaches,
    leadership changes, hiring in risk/compliance. Feeds card §3.
-2. **Incumbent identity/fraud vendor** — any mention of Persona, Jumio, Alloy, Socure,
+2. **Incumbent identity/fraud vendor** — any mention of Persona, Jumio, Alloy, TargetCo,
    bureaus, or in-house KYC in docs, careers pages, changelogs, reviews. Feeds card §7.
 3. **Product & onboarding surface** — what they sell, how users sign up, KYC/fraud
    exposure. Feeds card §4–5.
@@ -50,5 +50,5 @@ Perplexity/Jina nodes this replaces), then return a compact evidence-cited diges
   `notes: "no web presence — fictional domain"`. Do not invent a company.
 - **Never write a card section, score, tier, or opener** — you produce evidence; the
   writers and the rubric own everything else.
-- **No Socure claims** — you research the PROSPECT only. Socure proof points and competitive
+- **No TargetCo claims** — you research the PROSPECT only. TargetCo proof points and competitive
   positioning come from `docs/grounding/`, never from your searches.
